@@ -24,18 +24,19 @@ export async function POST(req: Request) {
     messages.unshift({
         role: 'system',
         content: `You are a helpful assistant. 
-    1) You may call the "weather" tool if needed. 
+    1) You may call tools if needed to answer the user question.
     2) When you do, you must incorporate the tool's result into your final response for the user. 
-    3) Do not simply return the tool result; respond with a helpful explanation.
-    4) Always output in markdown format.
-    5) If making a list, add a title above instead of inside. You cannot use headings or other tags like p and strong inside lists.`,
+    3) Always use the generateRecipe tool to generate a recipe.
+    4) Do not simply return the tool result; respond with a helpful explanation.
+    5) If making a list, add a title above instead of inside. You cannot use headings or other tags like p and strong inside lists.
+    6) Always ensure to call tools again, even if prompted the same question again. Do not make up an answer or use an earlier result.`,
     });
 
     const result = streamText({
         model: openai2('qwen2.5-7b-instruct-1m'),
         messages,
         experimental_continueSteps: true,
-        temperature: 0.5,
+        temperature: 0.3,
         onFinish: async (result) => {
             console.log("LLM API Call Result: ", JSON.stringify(result));
         },
@@ -66,21 +67,25 @@ export async function POST(req: Request) {
                     };
                 },
             }),
+            //This demonstrates how to generate a schema
             generateRecipe: tool({
                 description: 'Generate a recipe based on the user input. Do not output the tool call directly but use it in your final user-facing answer.',
                 parameters: z.object({
                     recipe: z.string().describe('The recipe to generate'),
                     ingredients: z.array(z.string()).describe('The ingredients for the recipe'),
+                    steps: z.array(z.string()).describe('The steps for the recipe'),
                 }),
-                execute: async ({ recipe, ingredients }) => {
+                execute: async ({ recipe, ingredients, steps }) => {
                     const object = {
                         recipe: recipe,
-                        ingredients: ingredients
+                        ingredients: ingredients,
+                        steps: steps,
                     }
                     return {
                         response: object,
                         recipe: recipe,
-                        ingredients: ingredients
+                        ingredients: ingredients,
+                        steps: steps,
                     };
                 },
             }),
@@ -110,7 +115,7 @@ export async function POST(req: Request) {
                 },
             }),
                     },
-        maxSteps: 15, // Let the LLM do multiple steps (tool call + final answer)
+        maxSteps: 20, // Let the LLM do multiple steps (tool call + final answer)
     });
 
     return result.toDataStreamResponse();
