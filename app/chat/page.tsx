@@ -30,10 +30,10 @@ export default function Chat() {
     const handlePredefinedPrompt = async (prompt: string) => {
         // First set the input value
         handleInputChange({ target: { value: prompt } } as React.ChangeEvent<HTMLInputElement>);
-        
+
         // Wait for the next tick to ensure the input value is set
         await new Promise(resolve => setTimeout(resolve, 0));
-        
+
         // Create a proper form submit event
         const form = document.querySelector('form');
         if (form) {
@@ -41,7 +41,7 @@ export default function Chat() {
         }
     };
 
-        
+
     // Detect if AI is still streaming
     const [isResponseStreaming, setIsResponseStreaming] = useState(false);
 
@@ -112,15 +112,14 @@ export default function Chat() {
                             )}
                         </div>
                         <div className={`whitespace-pre-wrap px-4 border rounded-xl w-full max-w-full  ${m.role === 'assistant' ? 'bg-zinc-50/80 shadow-2xl shadow-zinc-300/40 border-zinc-200' : 'bg-zinc-100/0 border-zinc-200'}`}>
-                        
-                                {m.role === 'assistant' && index === messages.length - 1 && isResponseStreaming && (
-                                    <span className="flex max-h-fit max-w-fit animate-pulse text-md pt-4">Thinking</span>
-                                )}
-                    
+
+                            {m.role === 'assistant' && index === messages.length - 1 && isResponseStreaming && (
+                                <span className="flex max-h-fit max-w-fit animate-pulse text-md pt-4">Thinking</span>
+                            )}
 
                             <div className="prose max-w-full ai-content flex flex-col">
                                 <div className='py-4 flex flex-col'>
-                                <MemoizedMarkdown id={m.id} content={m.content} />
+                                    <MemoizedMarkdown id={m.id} content={m.content} />
                                 </div>
                                 {m.toolInvocations?.some(invocation => invocation.state === 'result') && (
                                     <div className="flex flex-col gap-x-2  max-h-fit border-t border-zinc-200/80 pb-4">

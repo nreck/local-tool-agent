@@ -1,6 +1,5 @@
 // @/app/api/chat/route.ts
 import { streamText, tool } from 'ai';
-import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { z } from 'zod';
 import { tavily } from '@tavily/core';
@@ -10,10 +9,6 @@ const openai2 = createOpenAICompatible({
     baseURL: 'http://localhost:1234/v1',
 });
 
-const openai = createOpenAI({
-    baseURL: 'http://localhost:1234/v1',
-    compatibility: 'compatible', // strict mode, enable when using the OpenAI API
-});
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
@@ -31,14 +26,17 @@ export async function POST(req: Request) {
     4) Do not simply return the tool result; respond with a helpful explanation.
     5) If making a list, add a title above instead of inside. You cannot use headings or other tags like p and strong inside lists.
     6) Do not render lists inside lists.
-    7) Always ensure to call tools again, even if prompted the same question again. Do not make up an answer or use an earlier result.`,
+    7) If calling generateCourseOutline, **you MUST provide a proper goal, audience, and at least 3 topics**. 
+    8) If the user doesn't provide a goal, set a **default goal**. If they don't provide an audience, assume **"beginners"**. If no topics, assume **["Introduction", "Fundamentals", "Advanced Concepts"]**.
+    9) Always wait for tool results before continuing.`,
     });
+
 
     const result = streamText({
         model: openai2('qwen2.5-14b-instruct'),
         messages,
         experimental_continueSteps: true,
-        temperature: 0.3,
+        temperature: 0.5,
         onFinish: async (result) => {
             console.log("LLM API Call Result: ", JSON.stringify(result));
         },
@@ -69,7 +67,6 @@ export async function POST(req: Request) {
                     };
                 },
             }),
-            //This demonstrates how to generate a schema
             generateRecipe: tool({
                 description: 'Generate a recipe based on the user input. Do not output the tool call directly but use it in your final user-facing answer.',
                 parameters: z.object({
@@ -109,10 +106,10 @@ export async function POST(req: Request) {
                         throw new Error('Failed to review recipe');
                     }
 
-                    const { review } = await response.json(); // ✅ Extract the review field correctly
+                    const { review } = await response.json();
 
                     return {
-                        review,  // ✅ Ensure it's returned correctly
+                        review,
                     };
                 },
             }),
@@ -126,25 +123,52 @@ export async function POST(req: Request) {
                     const response = await tvlyClient.search(
                         query,
                         {
-                            searchDepth: 'advanced', 
-                            topic: 'general',      
+                            searchDepth: 'advanced',
+                            topic: 'general',
                             maxResults: 3,
                             includeImages: false,
                             includeImageDescriptions: false,
-                            includeAnswer: false,        // strictly boolean if your local library expects that
+                            includeAnswer: false,
                             includeRawContent: false,
                             includeDomains: [],
                             excludeDomains: [],
                         }
                     );
-
                     return response;
+                },
+            }),
+            generateCourseOutline: tool({
+                description: 'Generate a course outline based on user input. Returns a text message instead of JSON.',
+                parameters: z.object({
+                    goal: z.string().default("Learn the fundamentals of AI").describe('The goal of the course'),
+                    audience: z.string().default("Beginners").describe('The audience of the course'),
+                    topics: z.array(z.string()).default(["Introduction to AI", "Machine Learning Basics", "Deep Learning Concepts"]).describe('The topics to cover'),
+                }),
+                execute: async ({ goal, audience, topics }) => {
+                    try {
+                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/generateCourseOutline`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ goal, audience, topics }),
+                            cache: 'no-store',
+                        });
+
+                        // Read response as text (not JSON)
+                        const text = await response.text();
+
+                        console.log("generateCourseOutline API response:", text);
+
+                        return { courseOutline: text };
+                    } catch (error) {
+                        console.error("Error executing generateCourseOutline tool:", error);
+                        return { error: "An error occurred while generating the course outline." };
+                    }
                 },
             }),
 
 
         },
-        maxSteps: 20, // Let the LLM do multiple steps (tool call + final answer)
+        maxSteps: 20,
     });
 
     return result.toDataStreamResponse();

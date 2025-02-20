@@ -44,8 +44,8 @@ const StartScreen = ({ onPromptClick }: StartScreenProps) => {
   return (
     <div className="flex flex-col items-center space-y-5">
       <div className="flex flex-col items-center space-y-1.5 mb-4">
-      <h2 className="text-lg font-medium text-zinc-600"><span className="font-semibold text-zinc-900">dayforce </span><span className="font-light">/</span> Learning Assistant Prototype</h2>
-      <span className="text-zinc-500 text-sm">Currently running on Qwen-2.5</span>
+      <h2 className="text-lg font-medium text-zinc-600"><span className="font-semibold text-zinc-900">dayforce </span><span className="font-light">/</span> Learning assistant</h2>
+      <span className="text-zinc-500 text-sm">Prototype currently running on Qwen-2.5-14B</span>
       </div>
       <div className="grid grid-cols-2 gap-4">
         {promptTemplates.map((template, index) => (

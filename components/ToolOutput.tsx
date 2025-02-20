@@ -9,7 +9,7 @@ interface ToolOutputProps {
 }
 
 export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true);
 
     return (
         <div className="inline items-center w-full min-w-full py-2">
