@@ -38,14 +38,93 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
                     </div>
 
                     {/* Dynamic Key-Value Pairs */}
-                    {Object.entries(result).map(([key, value]) => (
-                        <div key={key} className="flex items-start gap-x-1.5 border border-zinc-200 pr-0 pl-2 rounded-md w-fit max-w-xl from-zinc-50 bg-gradient-to-br via-80% via-zinc-400/10 to-white overflow-hidden font-semibold text-xs tracking-tight">
-                            <span className="py-1.5 min-w-[80px]">{key}</span>
-                            <span className="text-xs font-mono font-normal tracking-wide text-zinc-900 bg-white/80 border-l border-zinc-200 px-2.5 py-1.5 max-h-40 overflow-hidden overflow-y-scroll">
-                                {Array.isArray(value) ? value.join(", ") : typeof value === "object" ? JSON.stringify(value) : String(value)}
-                            </span>
-                        </div>
-                    ))}
+                    {/* Dynamic Key-Value Pairs */}
+                    {Object.entries(result).map(([key, value]) => {
+                        // 1) Special case: 'results' array from tvlySearch
+                        if (key === "results" && Array.isArray(value)) {
+                            return (
+                                <div
+                                    key={key}
+                                    className="flex flex-col gap-1 border border-zinc-200 p-2 rounded-md w-fit max-w-xl bg-gradient-to-br from-zinc-50 via-zinc-400/10 to-white font-semibold text-xs tracking-tight"
+                                >
+                                    <span className="pb-1 font-bold">{key}:</span>
+                                    <div className="text-xs font-normal tracking-wide text-zinc-900">
+                                        {value.length > 0 ? (
+                                            value.map((item: any, index: number) => (
+                                                <div key={index} className="mb-2 p-2 border-b last:border-none border-zinc-300">
+                                                    <p className="font-bold">Result #{index + 1}</p>
+                                                    {/* Safely render fields if they exist */}
+                                                    {item.title && <p className="mt-1"><strong>Title:</strong> {item.title}</p>}
+                                                    {item.url && <p className="mt-1"><strong>URL:</strong> {item.url}</p>}
+                                                    {item.content && <p className="mt-1 whitespace-pre-wrap"><strong>Content:</strong> {item.content}</p>}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p>No results found.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        }
+
+                        // 2) Special case: 'images' array from tvlySearch
+                        if (key === "images" && Array.isArray(value)) {
+                            return (
+                                <div
+                                    key={key}
+                                    className="flex flex-col gap-1 border border-zinc-200 p-2 rounded-md w-fit max-w-xl bg-gradient-to-br from-zinc-50 via-zinc-400/10 to-white font-semibold text-xs tracking-tight"
+                                >
+                                    <span className="pb-1 font-bold">{key}:</span>
+                                    <div className="text-xs font-normal tracking-wide text-zinc-900 flex flex-wrap gap-2">
+                                        {value.length > 0 ? (
+                                            value.map((item: any, index: number) => {
+                                                // If we have an object with { url, description } -> handle it
+                                                if (typeof item === "object" && item.url) {
+                                                    return (
+                                                        <div key={index} className="flex flex-col border p-1 rounded-md max-w-[100px] items-center">
+                                                            <img src={item.url} alt={`tvly-search-image-${index}`} className="max-w-[96px] max-h-[96px] object-cover" />
+                                                            {item.description && (
+                                                                <p className="text-[10px] text-center mt-1">{item.description}</p>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                }
+                                                // If it's just a URL string
+                                                if (typeof item === "string") {
+                                                    return (
+                                                        <div key={index} className="border p-1 rounded-md max-w-[100px]">
+                                                            <img src={item} alt={`tvly-search-image-${index}`} className="max-w-[96px] max-h-[96px] object-cover" />
+                                                        </div>
+                                                    );
+                                                }
+                                                return null;
+                                            })
+                                        ) : (
+                                            <p>No images found.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        }
+
+                        // 3) Default rendering for everything else
+                        return (
+                            <div
+                                key={key}
+                                className="flex items-start gap-x-1.5 border border-zinc-200 pr-0 pl-2 rounded-md w-fit max-w-xl from-zinc-50 bg-gradient-to-br via-80% via-zinc-400/10 to-white overflow-hidden font-semibold text-xs tracking-tight"
+                            >
+                                <span className="py-1.5 min-w-[80px]">{key}</span>
+                                <span className="text-xs font-mono font-normal tracking-wide text-zinc-900 bg-white/80 border-l border-zinc-200 px-2.5 py-1.5 max-h-40 overflow-hidden overflow-y-scroll">
+                                    {Array.isArray(value)
+                                        ? value.join(", ")
+                                        : typeof value === "object"
+                                            ? JSON.stringify(value)
+                                            : String(value)}
+                                </span>
+                            </div>
+                        );
+                    })}
+
 
                     {/* Special handling for reviewRecipe - Render Markdown */}
                     {toolName === "reviewRecipe" && (

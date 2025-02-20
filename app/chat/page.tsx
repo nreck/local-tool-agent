@@ -6,6 +6,7 @@ import { MemoizedMarkdown } from '@/components/memoized-markdown';
 import ToolOutput from '@/components/ToolOutput';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import StartScreen from '@/components/StartScreen';
 
 export default function Chat() {
     const { messages, input, handleInputChange, handleSubmit } = useChat();
@@ -16,7 +17,31 @@ export default function Chat() {
     const [autoScroll, setAutoScroll] = useState(true);
     const [expandedTools, setExpandedTools] = useState<Record<string, boolean>>({});
     const [isStreaming, setIsStreaming] = useState(false); // Track if AI is currently streaming
+    const [showStartScreen, setShowStartScreen] = useState(true); // Track if StartScreen should be visible
 
+    // Hide StartScreen when a message is sent
+    useEffect(() => {
+        if (messages.length > 0) {
+            setShowStartScreen(false);
+        }
+    }, [messages]);
+
+    // Function to handle predefined prompt clicks and submit immediately
+    const handlePredefinedPrompt = async (prompt: string) => {
+        // First set the input value
+        handleInputChange({ target: { value: prompt } } as React.ChangeEvent<HTMLInputElement>);
+        
+        // Wait for the next tick to ensure the input value is set
+        await new Promise(resolve => setTimeout(resolve, 0));
+        
+        // Create a proper form submit event
+        const form = document.querySelector('form');
+        if (form) {
+            form.requestSubmit();
+        }
+    };
+
+        
     // Detect if AI is still streaming
     const [isResponseStreaming, setIsResponseStreaming] = useState(false);
 
@@ -66,6 +91,12 @@ export default function Chat() {
             ref={chatContainerRef}
             className="flex flex-col w-full pt-16 pb-36 mx-auto stretch overflow-y-auto h-screen no-scrollbar"
         >
+            {/* Show StartScreen only if no messages exist */}
+            {showStartScreen && (
+                <div className="flex flex-col items-center justify-center h-full">
+                    <StartScreen onPromptClick={handlePredefinedPrompt} />
+                </div>
+            )}
             <div className="flex flex-col gap-y-3.5 w-full max-w-2xl mx-auto">
                 {messages.map((m, index) => (
                     <div key={m.id} className="flex border border-transparent rounded-xl min-w-full w-full max-w-full overflow-hidden">
@@ -80,17 +111,19 @@ export default function Chat() {
                                 </div>
                             )}
                         </div>
-                        <div className={`whitespace-pre-wrap p-4 border rounded-xl min-w-full max-w-full w-full ${m.role === 'assistant' ? 'bg-zinc-50/80 shadow-2xl shadow-zinc-300/40 border-zinc-200' : 'bg-zinc-100/0 border-zinc-200'}`}>
-                            <div className="">
-                            {m.role === 'assistant' && index === messages.length - 1 && isResponseStreaming && (
-                            <span className="animate-pulse text-md">Thinking</span>
-                        )}
-                            </div>
+                        <div className={`whitespace-pre-wrap px-4 border rounded-xl w-full max-w-full  ${m.role === 'assistant' ? 'bg-zinc-50/80 shadow-2xl shadow-zinc-300/40 border-zinc-200' : 'bg-zinc-100/0 border-zinc-200'}`}>
+                        
+                                {m.role === 'assistant' && index === messages.length - 1 && isResponseStreaming && (
+                                    <span className="flex max-h-fit max-w-fit animate-pulse text-md pt-4">Thinking</span>
+                                )}
+                    
 
-                            <div className="prose max-w-full">
+                            <div className="prose max-w-full ai-content flex flex-col">
+                                <div className='py-4 flex flex-col'>
                                 <MemoizedMarkdown id={m.id} content={m.content} />
+                                </div>
                                 {m.toolInvocations?.some(invocation => invocation.state === 'result') && (
-                                    <div className="flex flex-col gap-x-2 mt-6 max-h-fit border-t border-zinc-200/80">
+                                    <div className="flex flex-col gap-x-2  max-h-fit border-t border-zinc-200/80 pb-4">
                                         <button
                                             className="expand-tools flex items-center gap-x-2.5 mt-3.5 focus:outline-none"
                                             onClick={() => toggleToolExpansion(m.id)}

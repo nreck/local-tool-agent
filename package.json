@@ -12,6 +12,7 @@
     "@ai-sdk/openai": "^1.1.12",
     "@ai-sdk/openai-compatible": "^0.1.10",
     "@heroicons/react": "^2.2.0",
+    "@tavily/core": "^0.3.1",
     "ai": "^4.1.41",
     "marked": "^15.0.7",
     "next": "15.1.7",

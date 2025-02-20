@@ -3,6 +3,7 @@ import { streamText, tool } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { z } from 'zod';
+import { tavily } from '@tavily/core';
 
 const openai2 = createOpenAICompatible({
     name: 'lmstudio',
@@ -29,11 +30,12 @@ export async function POST(req: Request) {
     3) Always use the generateRecipe tool to generate a recipe.
     4) Do not simply return the tool result; respond with a helpful explanation.
     5) If making a list, add a title above instead of inside. You cannot use headings or other tags like p and strong inside lists.
-    6) Always ensure to call tools again, even if prompted the same question again. Do not make up an answer or use an earlier result.`,
+    6) Do not render lists inside lists.
+    7) Always ensure to call tools again, even if prompted the same question again. Do not make up an answer or use an earlier result.`,
     });
 
     const result = streamText({
-        model: openai2('qwen2.5-7b-instruct-1m'),
+        model: openai2('qwen2.5-14b-instruct'),
         messages,
         experimental_continueSteps: true,
         temperature: 0.3,
@@ -54,7 +56,7 @@ export async function POST(req: Request) {
                     };
                 },
             }),
-                date: tool({
+            date: tool({
                 description: 'Get the current date. Do not output the tool call directly but use it in your final user-facing answer.',
                 parameters: z.object({
                     timezone: z.string().describe('The timezone to get the date for'),
@@ -102,19 +104,46 @@ export async function POST(req: Request) {
                         body: JSON.stringify({ recipe, ingredients }),
                         cache: 'no-store',
                     });
-            
+
                     if (!response.ok) {
                         throw new Error('Failed to review recipe');
                     }
-            
+
                     const { review } = await response.json(); // ✅ Extract the review field correctly
-            
+
                     return {
                         review,  // ✅ Ensure it's returned correctly
                     };
                 },
             }),
-                    },
+            tvlySearch: tool({
+                description: 'Use Tavily to search the internet. Provide a query for best results. Do not output the tool call directly but use it in your final user-facing answer.',
+                parameters: z.object({
+                    query: z.string().describe('The user search query'),
+                }),
+                execute: async ({ query }) => {
+                    const tvlyClient = tavily({ apiKey: process.env.TVLY_API_KEY });
+                    const response = await tvlyClient.search(
+                        query,
+                        {
+                            searchDepth: 'advanced', 
+                            topic: 'general',      
+                            maxResults: 3,
+                            includeImages: false,
+                            includeImageDescriptions: false,
+                            includeAnswer: false,        // strictly boolean if your local library expects that
+                            includeRawContent: false,
+                            includeDomains: [],
+                            excludeDomains: [],
+                        }
+                    );
+
+                    return response;
+                },
+            }),
+
+
+        },
         maxSteps: 20, // Let the LLM do multiple steps (tool call + final answer)
     });
 

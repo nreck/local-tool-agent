@@ -2,17 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  /* Hide scrollbar for Chrome, Safari and Opera */
+@layer base {
+  /* Hide scrollbars globally */
   .no-scrollbar::-webkit-scrollbar {
-      display: none;
+    display: none;
   }
- /* Hide scrollbar for IE, Edge and Firefox */
   .no-scrollbar {
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none;    /* Firefox */
+  }
+
+  /* Use Tailwind classes with @apply */
+
+  .ai-content > .py-4 > ul {
+    @apply flex flex-col gap-y-1.5 py-3;
+  }
+  .ai-content .py-4 > ul > li {
+    @apply flex rounded-lg border border-zinc-300/60 p-1.5 text-xs;
+  }
 }
-}
+
+/* Add any other layers or global styles as needed */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -29,4 +39,19 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+ul li p,
+ol li p,
+ul li strong,
+ol li strong,
+ul li pre,
+ol li pre,
+ul li a,
+ol li a {
+  display: inline;
+}
+
+li::marker {
+  vertical-align: top;
 }
