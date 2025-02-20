@@ -115,11 +115,20 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
                             >
                                 <span className="py-1.5 min-w-[80px]">{key}</span>
                                 <span className="text-xs font-mono font-normal tracking-wide text-zinc-900 bg-white/80 border-l border-zinc-200 px-2.5 py-1.5 max-h-40 overflow-hidden overflow-y-scroll">
-                                    {Array.isArray(value)
-                                        ? value.join(", ")
-                                        : typeof value === "object"
-                                            ? JSON.stringify(value)
-                                            : String(value)}
+                                    {Array.isArray(value) ? (
+                                        value.every(item => typeof item === "object") ? (
+                                            <div className="flex flex-col gap-2">
+                                                {value.map((item, index) => (
+                                                    <div key={index} className="p-2 border border-zinc-300 rounded-md">
+                                                        <pre className="text-xs font-mono whitespace-pre-wrap">{JSON.stringify(item, null, 2)}</pre>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            value.join(", ")
+                                        )
+                                    ) : typeof value === "object" ? JSON.stringify(value, null, 2) : String(value)}
+
                                 </span>
                             </div>
                         );

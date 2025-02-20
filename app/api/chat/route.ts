@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     // uses the tool result in its final response
     messages.unshift({
         role: 'system',
-        content: `You are a helpful assistant. 
+        content: `You are a helpful english speaking assistant. 
     1) You may call tools if needed to answer the user question.
     2) When you do, you must incorporate the tool's result into your final response for the user. 
     3) Always use the generateRecipe tool to generate a recipe.
@@ -138,7 +138,7 @@ export async function POST(req: Request) {
                 },
             }),
             generateCourseOutline: tool({
-                description: 'Generate a course outline based on user input. Returns a text message instead of JSON.',
+                description: 'Generate a course outline based on user input. Returns a JSON object containing the course structure.',
                 parameters: z.object({
                     goal: z.string().default("Learn the fundamentals of AI").describe('The goal of the course'),
                     audience: z.string().default("Beginners").describe('The audience of the course'),
@@ -153,12 +153,12 @@ export async function POST(req: Request) {
                             cache: 'no-store',
                         });
 
-                        // Read response as text (not JSON)
-                        const text = await response.text();
+                        // ✅ Read response as JSON instead of text
+                        const data = await response.json();
 
-                        console.log("generateCourseOutline API response:", text);
+                        console.log("generateCourseOutline API response:", data);
 
-                        return { courseOutline: text };
+                        return data; // ✅ Return structured JSON directly to the chat agent
                     } catch (error) {
                         console.error("Error executing generateCourseOutline tool:", error);
                         return { error: "An error occurred while generating the course outline." };
