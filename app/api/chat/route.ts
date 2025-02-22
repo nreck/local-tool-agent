@@ -32,6 +32,7 @@ export async function POST(req: Request) {
     9) When generating topics, make sure to use the tvlySearch tool to research the user request before confirming the topics with the generateTopics tool. Always use the tool to output topics!
     10) Always inform the user about what you are doing and why you are doing it before proceeding.
     11) Use the GiphyTools to search for GIFs when needed.
+    12) Use the imageVision tool to analyze images and provide a description. Provide an image URL to process.
     `,
 
     });
@@ -150,6 +151,30 @@ export async function POST(req: Request) {
                     } catch (error) {
                         console.error("Error executing generateCourseOutline tool:", error);
                         return { error: "An error occurred while generating the course outline." };
+                    }
+                },
+            }),
+            imageVision: tool({
+                description: 'Analyze an image and provide a description. Provide an image URL to process.',
+                parameters: z.object({
+                    imageUrl: z.string().describe('The URL of the image to analyze'),
+                    prompt: z.string().optional().describe('Optional specific question about the image'),
+                }),
+                execute: async ({ imageUrl, prompt }) => {
+                    try {
+                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/imageVision`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ imageUrl, prompt }),
+                            cache: 'no-store',
+                        });
+
+                        const data = await response.json();
+                        console.log("Vision API response:", data);
+                        return data;
+                    } catch (error) {
+                        console.error("Error executing vision tool:", error);
+                        return { error: "Failed to analyze image" };
                     }
                 },
             }),

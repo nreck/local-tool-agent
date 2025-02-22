@@ -5,16 +5,18 @@ import { useChat } from '@ai-sdk/react';
 import { MemoizedMarkdown } from '@/components/memoized-markdown';
 import ToolOutput from '@/components/ToolOutput';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ChevronUpIcon, PaperClipIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import StartScreen from '@/components/StartScreen';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Chat() {
-    const { messages, input, handleInputChange, handleSubmit, status, stop } = useChat();
+    const { messages, input, handleInputChange, handleSubmit, append, status, stop } = useChat();
     console.log("full response:", JSON.stringify(messages, null, 2));
 
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
+    const [uploadedImages, setUploadedImages] = useState<string[]>([]); // Store image URLs
+
     const [autoScroll, setAutoScroll] = useState(true);
     const [expandedTools, setExpandedTools] = useState<Record<string, boolean>>({});
     const [isStreaming, setIsStreaming] = useState(false); // Track if AI is currently streaming
@@ -40,6 +42,66 @@ export default function Chat() {
         if (form) {
             form.requestSubmit();
         }
+    };
+
+    // Handle Image Upload
+    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        // Upload to /public/uploads
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+            const response = await fetch("/api/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!response.ok) throw new Error("Image upload failed");
+
+            const { imageUrl } = await response.json();
+            setUploadedImages((prev) => [...prev, imageUrl]); // Add uploaded image to state
+        } catch (error) {
+            console.error("Upload error:", error);
+        }
+    };
+
+
+    const handleSubmitWithImages = async (event?: { preventDefault?: () => void }) => {
+        if (event?.preventDefault) event.preventDefault(); // Prevent default form submission
+
+        // Convert uploaded image URLs to Markdown format
+        const markdownImages = uploadedImages
+            .map(url => `![Uploaded Image](${url})`)
+            .join("\n\n"); // Add spacing between images
+
+        // Construct message content with Markdown-formatted images
+        const userMessage = input || "Uploaded images:";
+        const finalMessage = uploadedImages.length > 0
+            ? `${userMessage}\n\n${markdownImages}`
+            : userMessage;
+
+        console.log("Final message being sent:", finalMessage);
+
+        // Append the message directly instead of using handleSubmit
+        append({
+            role: "user",
+            content: finalMessage, // This ensures images render as Markdown
+            data: {
+                imageUrls: uploadedImages, // Include images as structured metadata
+            },
+        });
+
+        // Clear uploaded images and reset input
+        setUploadedImages([]);
+        handleInputChange({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>);
+    };
+
+    // Remove Image
+    const removeImage = (imageUrl: string) => {
+        setUploadedImages((prev) => prev.filter((img) => img !== imageUrl));
     };
 
     // Detect user scrolling
@@ -161,16 +223,40 @@ export default function Chat() {
                 ))}
             </div>
 
+            {/* Display Uploaded Images */}
+            {uploadedImages.length > 0 && (
+                <div className="flex gap-2 p-2">
+                    {uploadedImages.map((imageUrl, index) => (
+                        <div key={index} className="relative">
+                            <img src={imageUrl} alt="Uploaded" className="h-20 w-24 object-cover rounded-md" />
+                            <button
+                                onClick={() => removeImage(imageUrl)}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                            >
+                                <XMarkIcon className="h-5 w-5" />
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
+
             {/* Scroll anchor at the bottom */}
             <div ref={bottomRef} />
 
-            <form onSubmit={handleSubmit}>
+            {/* Input + Attach Button */}
+            <form onSubmit={handleSubmitWithImages} className="fixed bottom-0 w-full max-w-screen-md mx-auto left-0 right-0 p-3 mb-8 flex items-center gap-2">
                 <input
-                    className="fixed bottom-0 w-full max-w-screen-md mx-auto left-0 right-0 p-3 mb-8 placeholder-zinc-500 bg-zinc-50 border border-zinc-50 ring ring-zinc-200 outline outline-white p-4 rounded-lg shadow-2xl shadow-zinc-300"
+                    className="flex-grow p-4 placeholder-zinc-500 bg-zinc-50 border border-zinc-50 ring ring-zinc-200 outline outline-white rounded-lg shadow-2xl shadow-zinc-300"
                     value={input}
-                    placeholder="Ask something"
+                    placeholder="Ask something..."
                     onChange={handleInputChange}
                 />
+
+                {/* File Upload Button */}
+                <label className="cursor-pointer bg-zinc-200 p-2 rounded-lg">
+                    <PaperClipIcon className="h-6 w-6 text-gray-700" />
+                    <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                </label>
             </form>
         </div>
     );
