@@ -85,46 +85,45 @@ export default function Chat() {
             )}
             <div className="flex flex-col gap-y-3.5 w-full max-w-2xl mx-auto">
                 {messages.map((m, index) => (
-                    <div key={m.id} className="flex border border-transparent rounded-xl min-w-full w-full max-w-full overflow-hidden">
-                        <div className="pr-6 pt-3">
+                    <div key={m.id} className="flex border border-transparent rounded-xl min-w-full w-full max-w-full h-fit max-h-fit overflow-hidden">
+                        <div className="pr-5 pt-3">
                             {m.role === 'user' ? (
-                                <div className="font-bold p-2 mb-3 mt-0.5 bg-zinc-300/80 text-white rounded-full max-w-fit max-h-fit">
-                                    <svg data-testid="geist-icon" height="12" strokeLinejoin="round" viewBox="0 0 16 16" width="12" className="text-white"></svg>
+                                <div className="font-bold p-2 mb-3 mt-0.5 bg-zinc-300/80 text-white rounded-full overflow-hiden  w-8 h-8">
                                 </div>
                             ) : (
-                                <div className="font-bold p-2 mb-3 mt-0.5 bg-zinc-900 text-white rounded-full max-w-fit max-h-fit">
-                                    <svg data-testid="geist-icon" height="12" strokeLinejoin="round" viewBox="0 0 16 16" width="12" className="text-white"></svg>
+                                <div className="font-bold mb-3 mt-0.5 bg-zinc-900 text-white rounded-full max-w-fit max-h-fit overflow-hidden w-8 h-8">
+                                    <img src="avatar.jpeg" className='w-full h-full' />
                                 </div>
                             )}
                         </div>
-                        <AnimatePresence mode="wait">
+                        <AnimatePresence>
 
-                            <div className={`whitespace-pre-wrap px-4 border rounded-xl w-full max-w-full  ${m.role === 'assistant' ? 'bg-zinc-50/80 shadow-2xl shadow-zinc-300/40 border-zinc-200' : 'bg-zinc-100/0 border-zinc-200'}`}>
+                            <div className={`whitespace-pre-wrap px-4 border rounded-xl w-full max-w-full h-fit max-h-fit  ${m.role === 'assistant' ? 'bg-zinc-50/80 shadow-2xl shadow-zinc-300/40 border-zinc-200' : 'bg-zinc-100/0 border-zinc-200'}`}>
 
-                                <div className="prose max-w-full ai-content flex flex-col">
-                                    <div className='py-4 flex flex-col'>
-                                        <MemoizedMarkdown id={m.id} content={m.content} />
+                                <div className="prose max-w-full ai-content flex flex-col h-fit max-h-fit">
+                                    {m.content && (
+                                        <div className={`pt-4 flex flex-col gap-y-3 ${m.role === 'assistant' ? 'pb-4' : ''} ${m.role === 'user' ? 'pb-4' : ''}`}>
 
+                                            <MemoizedMarkdown id={m.id} content={m.content} />
+                                        </div>
+                                    )}
 
-                                        {m.id === lastAssistantMessage?.id && (status === 'submitted' || status === 'streaming') && (
-                                            <motion.div
-                                                key="thinking"
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                exit={{ opacity: 0 }}
-                                                transition={{ duration: 0.2, ease: "easeInOut" }}
-                                                className="flex items-center gap-2 pt-4"
-                                            >
-                                                <span className="text-md animate-pulse"><LoadingSpinner /></span>
-                                                <button className="hidden" type="button" onClick={() => stop()}>
-                                                    Stop
-                                                </button>
-                                            </motion.div>
-                                        )}
+                                    {m.id === lastAssistantMessage?.id && (status === 'submitted' || status === 'streaming') && (
+                                        <motion.div
+                                            key="thinking"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.2, ease: "easeInOut" }}
+                                            className="flex items-center gap-2 py-4"
+                                        >
+                                            <span className="text-md animate-pulse"><LoadingSpinner /></span>
+                                            <button className="hidden" type="button" onClick={() => stop()}>
+                                                Stop
+                                            </button>
+                                        </motion.div>
+                                    )}
 
-
-
-                                    </div>
                                     {m.toolInvocations?.some(invocation => invocation.state === 'result') && (
                                         <div className="flex flex-col gap-x-2  max-h-fit border-t border-zinc-200/80 pb-4">
                                             <button

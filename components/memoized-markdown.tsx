@@ -12,8 +12,8 @@ const MemoizedMarkdownBlock = memo(
                     h3: ({ children }) => <h3 className="text-xl tracking-tight font-bold mb-1.5 mt-3.5">{children}</h3>,
                     h4: ({ children }) => <h4 className="text-md font-bold mb-1 mt-3.5">{children}</h4>,
                     ol: ({ children }) => <ol className="flex flex-col max-h-fit text-md w-full">{children}</ol>,
-                    ul: ({ children }) => <ul className="flex flex-col max-h-fit text-md w-full">{children}</ul>,
-                    li: ({ children }) => <li className="flex flex-col max-h-fit max-h-fit">{children}</li>,
+                    ul: ({ children }) => <ul className="flex flex-col gap-y-1.5 max-h-fit text-md w-full">{children}</ul>,
+                    li: ({ children }) => <li className="inline-table max-h-fit py-1">{children}</li>,
                     strong: ({ children }) => <strong className="font-semibold ">{children}</strong>,
                     a: ({ children, href }) => <a href={href} className="text-sky-500 font-medium ">{children}</a>,
                 }}

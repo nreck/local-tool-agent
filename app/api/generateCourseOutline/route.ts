@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 const openai2 = createOpenAICompatible({
     name: 'lmstudio',
-    baseURL: 'http://localhost:1234/v1',
+    baseURL: 'http://89.150.153.77:1234/v1',
 });
 
 export async function POST(req: Request) {

@@ -6,7 +6,7 @@ import { tavily } from '@tavily/core';
 
 const openai2 = createOpenAICompatible({
     name: 'lmstudio',
-    baseURL: 'http://localhost:1234/v1',
+    baseURL: 'http://89.150.153.77:1234/v1',
 });
 
 // Allow streaming responses up to 30 seconds
@@ -22,14 +22,17 @@ export async function POST(req: Request) {
         content: `You are a helpful english speaking assistant. 
     1) You may call tools if needed to answer the user question.
     2) When you do, you must incorporate the tool's result into your final response for the user. 
-    3) Always use the generateRecipe tool to generate a recipe.
-    4) Do not simply return the tool result; respond with a helpful explanation.
-    5) If making a list, add a title above instead of inside. You cannot use headings or other tags like p and strong inside lists.
-    6) Do not render lists inside lists.
-    7) If calling generateCourseOutline, **you MUST provide a proper goal, audience, and at least 3 topics**. 
-    8) If the user doesn't provide a goal, set a **default goal**. If they don't provide an audience, assume **"beginners"**. If no topics, assume **["Introduction", "Fundamentals", "Advanced Concepts"]**.
-    9) Always wait for tool results before continuing.`,
-    });
+    3) If making a list, add a title above instead of inside. You cannot use headings or other tags like p and strong inside lists.
+    4) Do not render lists inside lists.
+    5) If calling generateCourseOutline, **you MUST provide a proper goal, audience, and at least 3 topics**. 
+    6) If the user doesn't provide a goal, set a **default goal**. If they don't provide an audience, assume **"beginners"**. If no topics, assume **["Introduction", "Fundamentals", "Advanced Concepts"]**.
+    7) Always wait for tool results before continuing.
+    8) In order to create a course succesfully, always use the generateTopics tool to confirm your topics choice. Use the tvlySearch tool to search the web for these topics, before using the generateCourseOutline tool to create a highly relevant course outline based on the tools results and the user goal and audienece.
+    9) When generating topics, make sure to use the tvlySearch tool to research the user request before confirming the topics with the generateTopics tool. Always use the tool to output topics!
+    10) Always inform the user about what you are doing and why you are doing it before proceeding.
+    `,
+    
+});
 
 
     const result = streamText({
@@ -67,62 +70,15 @@ export async function POST(req: Request) {
                     };
                 },
             }),
-            generateRecipe: tool({
-                description: 'Generate a recipe based on the user input. Do not output the tool call directly but use it in your final user-facing answer.',
-                parameters: z.object({
-                    recipe: z.string().describe('The recipe to generate'),
-                    ingredients: z.array(z.string()).describe('The ingredients for the recipe'),
-                    steps: z.array(z.string()).describe('The steps for the recipe'),
-                }),
-                execute: async ({ recipe, ingredients, steps }) => {
-                    const object = {
-                        recipe: recipe,
-                        ingredients: ingredients,
-                        steps: steps,
-                    }
-                    return {
-                        response: object,
-                        recipe: recipe,
-                        ingredients: ingredients,
-                        steps: steps,
-                    };
-                },
-            }),
-            reviewRecipe: tool({
-                description: 'Review the ingredients of a recipe to ensure they are correct. Do not output the tool call directly but use it in your final user-facing answer.',
-                parameters: z.object({
-                    recipe: z.string().describe('The recipe to generate'),
-                    ingredients: z.array(z.string()).describe('The ingredients for the recipe'),
-                }),
-                execute: async ({ recipe, ingredients }) => {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/review`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ recipe, ingredients }),
-                        cache: 'no-store',
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to review recipe');
-                    }
-
-                    const { review } = await response.json();
-
-                    return {
-                        review,
-                    };
-                },
-            }),
             tvlySearch: tool({
-                description: 'Use Tavily to search the internet. Provide a query for best results. Do not output the tool call directly but use it in your final user-facing answer.',
+                description: 'Use Tavily to search the internet. Provide a query for best results. Do not output the tool call directly but use it in your final user-facing answer. Do not output topic related search results directly, but use them to output relevant topics with the generateTopics tool.',
                 parameters: z.object({
                     query: z.string().describe('The user search query'),
                 }),
                 execute: async ({ query }) => {
-                    const tvlyClient = tavily({ apiKey: process.env.TVLY_API_KEY });
-                    const response = await tvlyClient.search(
-                        query,
-                        {
+                    try {
+                        const tvlyClient = tavily({ apiKey: process.env.TVLY_API_KEY });
+                        const response = await tvlyClient.search(query, {
                             searchDepth: 'advanced',
                             topic: 'general',
                             maxResults: 3,
@@ -132,11 +88,40 @@ export async function POST(req: Request) {
                             includeRawContent: false,
                             includeDomains: [],
                             excludeDomains: [],
-                        }
-                    );
-                    return response;
+                        });
+                        console.log("Tavily response:", response);
+                        return response;
+                    } catch (error) {
+                        console.error("Error in Tavily search:", error);
+                        return { error: "Failed to fetch Tavily search results" };
+                    }
                 },
             }),
+            generateTopics: tool({
+                description: 'Output topic suggestions based on the user provided request.',
+                parameters: z.object({
+                    goal: z.string().describe('The goal from the user'),
+                    topics: z.array(z.object({
+                        topic: z.string().describe('The topic name'),
+                        reasoning: z.string().describe('Your reasoning for this topic')
+                    })).describe('Array of topics'),
+                    reasoning: z.string().describe('Your overall reasoning for the topic selection'),
+                }),
+                execute: async ({ goal, topics, reasoning }) => {
+                    const object = {
+                        goal: goal,
+                        topics: topics,
+                        reasoning: reasoning,
+                    }
+                    return {
+                        response: object,
+                        goal: goal,
+                        topics: topics,
+                        reasoning: reasoning,
+                    };
+                },
+            }),
+
             generateCourseOutline: tool({
                 description: 'Generate a course outline based on user input. Returns a JSON object containing the course structure.',
                 parameters: z.object({
@@ -144,6 +129,7 @@ export async function POST(req: Request) {
                     audience: z.string().default("Beginners").describe('The audience of the course'),
                     topics: z.array(z.string()).default(["Introduction to AI", "Machine Learning Basics", "Deep Learning Concepts"]).describe('The topics to cover'),
                 }),
+
                 execute: async ({ goal, audience, topics }) => {
                     try {
                         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/generateCourseOutline`, {
@@ -168,8 +154,10 @@ export async function POST(req: Request) {
 
 
         },
-        maxSteps: 20,
+        maxSteps: 30,
     });
+    console.log("Tavily API Key:", process.env.TVLY_API_KEY);
+
 
     return result.toDataStreamResponse();
 }

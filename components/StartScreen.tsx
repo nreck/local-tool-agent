@@ -6,60 +6,48 @@ interface StartScreenProps {
 }
 
 const promptTemplates = [
-  {
-    icon: <CakeIcon className="w-6 h-6 text-zinc-400 mb-1 mx-auto" />,
-    label: "Create recipe",
-    prompt: "How do I bake a chocolate cake?"
-  },
-  {
-    icon: "🌤️",
-    label: "Weather forecast",
-    prompt: "How's the weather in Copenhagen today?"
-  },
-  {
-    icon: "📚",
-    label: "Find a book",
-    prompt: "Can you recommend a good book?"
-  },
-  {
-    icon: "🔍",
-    label: "Search the web",
-    prompt: "Find information about eloomi."
-  },
-
-  {
-    icon: "🎓",
-    label: "Create course",
-    prompt: "Create a course about artificial intelligence."
-  },
-  {
-    icon: "🗂️",
-    label: "Find topics",
-    prompt: "Show me trending topics in technology."
-  }
+    {
+        icon: "🎓",
+        label: "Generate course",
+        prompt: "Generate a practical, easy-to-follow course for onboarding remote tech employees to Microsoft Teams. The goal is to help them feel comfortable and confident using Teams for daily communication, collaboration, and productivity—without overwhelming them with too much information at once.",
+        description: "Generate a structured course outline for specific learning objectives."
+    },
+    {
+        icon: "🔍",
+        label: "Search web",
+        prompt: "Search the web for eloomi and find the latest information about the company, purpose, stakeholders and products.",
+        description: "Search and retrieve information about eloomi."
+    },
+   
+    {
+        icon: "🗂️",
+        label: "Related topics",
+        prompt: "Generate 5 topics about the latest technology trends.",
+        description: "Generate topics on technology trends."
+    },
+    
 ];
-
 
 const StartScreen = ({ onPromptClick }: StartScreenProps) => {
   return (
     <div className="flex flex-col items-center space-y-5">
-      <div className="flex flex-col items-center space-y-1.5 mb-4">
-      <h2 className="text-lg font-medium text-zinc-600"><span className="font-semibold text-zinc-900">dayforce </span><span className="font-light">/</span> Learning assistant</h2>
-      <span className="text-zinc-500 text-sm">Prototype currently running on Qwen-2.5-14B</span>
+      <div className="flex flex-col items-center space-y-1 mb-3">
+      <h2 className="text-xl font-medium text-zinc-600"><span className="font-semibold text-zinc-900">Learning agent </span><span className="font-light">/</span> Client interface</h2>
+      <span className="text-zinc-500 text-sm mt-0.5">Currently running on Qwen-2.5-14B</span>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col gap-2.5">
         {promptTemplates.map((template, index) => (
           <button 
             key={index}
-            className="p-3.5 bg-zinc-100 rounded-lg shadow-sm hover:bg-zinc-200"
+            className="p-3.5 px-5 bg-zinc-100 border border-zinc-200 rounded-lg shadow-sm hover:bg-zinc-200"
             onClick={() => onPromptClick(template.prompt)}
           >
-            <div className="flex flex-col items-start pr-1.5">
-              <div className="flex items-center gap-x-3">
+            <div className="flex flex-col items-start pr-">
+              <div className="flex items-center gap-x-4">
                 {template.icon}
                <div className="flex flex-col items-start justify-start">
-               <span className="font-semibold text-sm ">{template.label}</span>
-               <p className="text-zinc-500 text-xs mt-0.5 ">{template.prompt}</p>
+               <span className="font-medium  text-zinc-800 text-md ">{template.label}</span>
+               <p className="text-zinc-500 text-sm max-w-[300px] text-left">{template.description}</p>
                </div>
 
               </div>

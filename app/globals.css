@@ -20,6 +20,18 @@
   .ai-content .py-4 > ul > li {
     @apply flex rounded-lg border border-zinc-300/60 p-1.5 text-xs;
   }
+
+  .ai-content > ul > li > strong {
+    @apply inline-block max-w-fit;
+  }
+
+  ul > li {
+    @apply inline-block max-w-fit;
+  }
+
+  .ai-content pre {
+    @apply rounded !m-0 !bg-zinc-900;
+  }
 }
 
 /* Add any other layers or global styles as needed */
@@ -55,3 +67,4 @@ ol li a {
 li::marker {
   vertical-align: top;
 }
+
