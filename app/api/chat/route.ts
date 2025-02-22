@@ -3,6 +3,7 @@ import { streamText, tool } from 'ai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { z } from 'zod';
 import { tavily } from '@tavily/core';
+import { giphyTools } from '@/lib/tools/giphy'
 
 const openai2 = createOpenAICompatible({
     name: 'lmstudio',
@@ -30,9 +31,10 @@ export async function POST(req: Request) {
     8) In order to create a course succesfully, always use the generateTopics tool to confirm your topics choice. Use the tvlySearch tool to search the web for these topics, before using the generateCourseOutline tool to create a highly relevant course outline based on the tools results and the user goal and audienece.
     9) When generating topics, make sure to use the tvlySearch tool to research the user request before confirming the topics with the generateTopics tool. Always use the tool to output topics!
     10) Always inform the user about what you are doing and why you are doing it before proceeding.
+    11) Use the GiphyTools to search for GIFs when needed.
     `,
-    
-});
+
+    });
 
 
     const result = streamText({
@@ -71,7 +73,7 @@ export async function POST(req: Request) {
                 },
             }),
             tvlySearch: tool({
-                description: 'Use Tavily to search the internet. Provide a query for best results. Do not output the tool call directly but use it in your final user-facing answer. Do not output topic related search results directly, but use them to output relevant topics with the generateTopics tool.',
+                description: 'Use Tavily to search the internet. Provide a query for best results. Do not output the tool call directly but use it in your final user-facing answer. Do not output topic related search results directly, but use them to output relevant topics with the generateTopics tool. Do not use this tool for searching GIFs.',
                 parameters: z.object({
                     query: z.string().describe('The user search query'),
                 }),
@@ -151,8 +153,7 @@ export async function POST(req: Request) {
                     }
                 },
             }),
-
-
+            ...giphyTools({ apiKey: process.env.GIPHY_API_KEY || '' }),
         },
         maxSteps: 30,
     });

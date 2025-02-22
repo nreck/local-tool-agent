@@ -1,5 +1,6 @@
 // @/components/memoized-markdown.tsx
-import { memo } from 'react';
+import { marked } from 'marked';
+import { memo, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 const MemoizedMarkdownBlock = memo(
@@ -15,7 +16,33 @@ const MemoizedMarkdownBlock = memo(
                     ul: ({ children }) => <ul className="flex flex-col gap-y-1.5 max-h-fit text-md w-full">{children}</ul>,
                     li: ({ children }) => <li className="inline-table max-h-fit py-1">{children}</li>,
                     strong: ({ children }) => <strong className="font-semibold ">{children}</strong>,
-                    a: ({ children, href }) => <a href={href} className="text-sky-500 font-medium ">{children}</a>,
+                    a: ({ children, href }) => <a href={href} className="text-sky-500 font-medium max-w-fit">{children}</a>,
+                    img: ({ src, alt }) => {
+                        if (!src) return null;
+
+                        // Detect Giphy URLs
+                        const isGiphy = src.includes("giphy.com/media/");
+
+                        // If it's a Giphy image, extract the ID for embedding
+                        if (isGiphy) {
+                            const giphyId = src.split("/media/")[1]?.split("/")[0];
+
+                            return (
+                                <iframe
+                                    src={`https://giphy.com/embed/${giphyId}`}
+                                    width="100%"
+                                    height="auto"
+                                    allowFullScreen
+                                    className="flex max-w-fit h-auto bg-zinc-200 rounded-lg"
+                                />
+                            );
+                        }
+
+                        // Otherwise, return a normal image
+                        return <img src={src} alt={alt} className="flex max-w-fit h-auto" />;
+                    },
+
+
                 }}
             >
                 {content}

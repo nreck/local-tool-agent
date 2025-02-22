@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { MemoizedMarkdown } from "@/components/memoized-markdown";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -12,6 +12,7 @@ interface ToolOutputProps {
 
 export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [showFullJson, setShowFullJson] = useState(false);
 
     return (
         <div className="inline items-center w-full min-w-full py-2">
@@ -94,19 +95,31 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
                             );
                         }
 
-                        // 3) Default case: Render JSON objects with syntax highlighting
+                        // 3) Default case: Render JSON objects with optimized syntax highlighting
                         if (typeof value === "object" && value !== null) {
+                            const jsonString = useMemo(() => {
+                                const json = JSON.stringify(value, null, 2) ?? "{}";
+                                return json.length > 5000 ? json.slice(0, 5000) + "... (truncated)" : json;
+                            }, [value]);
+
                             return (
                                 <div
                                     key={key}
                                     className="border border-zinc-200 p-2 rounded-md max-w-xl bg-gradient-to-br from-zinc-50 via-zinc-400/10 to-white"
                                 >
                                     <span className="pb-1 font-semibold text-xs text-zinc-900">{key}:</span>
-                                    <div className="n">
-                                    <SyntaxHighlighter language="json" style={vscDarkPlus} wrapLongLines>
-                                        {JSON.stringify(value, null, 2)}
-                                    </SyntaxHighlighter>
-                                    </div>
+                                    <button
+                                        onClick={() => setShowFullJson((prev) => !prev)}
+                                        className="text-xs text-blue-600 underline my-1"
+                                    >
+                                        {showFullJson ? "Hide JSON" : "Show Full JSON"}
+                                    </button>
+
+                                    {showFullJson && (
+                                        <SyntaxHighlighter language="json" style={vscDarkPlus} wrapLongLines>
+                                            {jsonString}
+                                        </SyntaxHighlighter>
+                                    )}
                                 </div>
                             );
                         }
