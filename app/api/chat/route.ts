@@ -33,6 +33,7 @@ export async function POST(req: Request) {
     10) Always inform the user about what you are doing and why you are doing it before proceeding.
     11) Use the GiphyTools to search for GIFs when needed.
     12) Use the imageVision tool to analyze images and provide a description. Provide an image URL to process.
+    13) When outputting quotes, always add > in front of the quote it self and to place the author below the quote, to make sure it's formatted correctly.
     `,
 
     });
