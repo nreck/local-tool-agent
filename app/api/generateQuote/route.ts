@@ -10,24 +10,24 @@ const openai2 = createOpenAICompatible({
 
 export async function POST(req: Request) {
     try {
-        let { topic, style, length, source } = await req.json();
+        let { quote, author, source } = await req.json();
 
         // Set defaults if not provided
-        if (!topic || topic.trim() === "") topic = "inspiration";
-        if (!style || style.trim() === "") style = "motivational";
-        if (!length || length.trim() === "") length = "medium";
+        if (!quote || quote.trim() === "") quote = "inspiration";
+        if (!author || author.trim() === "") author = "motivational";
+        if (!source || source.trim() === "") source = "medium";
 
-        console.log("generateQuote received:", { topic, style, length });
+        console.log("generateQuote received:", { quote, author, source });
 
         const response = await generateObject({
             model: openai2('qwen2.5-14b-instruct'),
-            system: `You are a quote generator. Your output MUST be valid JSON and follow the given schema. Generate thoughtful, impactful quotes that resonate with the given topic and style.`,
-            prompt: `Output a quote about ${topic}. Make sure it's a real quote from an actual author that you know the name of. Context from web search: ${source}`,
+            system: `You are a quote formatter. Your output MUST be valid JSON and follow the given schema..`,
+            prompt: `Quote: "${quote}". Author: "${author}". Source: "${source}".`,
             temperature: 0.5,
             schemaName: "Quote",
             schema: z.object({
                 quote: z.object({
-                    text: z.string().describe('The main quote text'),
+                    quote: z.string().describe('The quote'),
                     author: z.string().describe('The author of the quote'),
                     source: z.string().describe('What did you base this on?'),
                 }),

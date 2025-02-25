@@ -130,10 +130,6 @@ export default function Chat() {
         }));
     };
 
-    const lastAssistantMessage = messages
-        .filter(msg => msg.role === 'assistant')
-        .slice(-1)[0]; // Get the last assistant message
-
     return (
         <div
             ref={chatContainerRef}
@@ -158,66 +154,79 @@ export default function Chat() {
                                 </div>
                             )}
                         </div>
-                        <AnimatePresence>
+                        <AnimatePresence mode="popLayout">
+                            <motion.div initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.2, ease: "easeInOut" }} className='flex flex-col'>
 
-                            <div className={`whitespace-pre-wrap px-4 border rounded-xl w-full max-w-full h-fit max-h-fit  ${m.role === 'assistant' ? 'bg-zinc-50/80 shadow-2xl shadow-zinc-300/40 border-zinc-200' : 'bg-zinc-100/0 border-zinc-200'}`}>
+                                <motion.div initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    transition={{ duration: 0.2, ease: "easeInOut" }} className={`whitespace-pre-wrap px-4 border rounded-xl w-full max-w-full h-fit max-h-fit  ${m.role === 'assistant' ? 'bg-zinc-50/80  border-zinc-200' : 'bg-zinc-100/0 border-zinc-200'}`}>
 
-                                <div className="prose max-w-full ai-content flex flex-col h-fit max-h-fit">
-                                    {m.content && (
-                                        <div className={`pt-4 flex flex-col gap-y-3 ${m.role === 'assistant' ? 'pb-4' : ''} ${m.role === 'user' ? 'pb-4' : ''}`}>
+                                    <div className="prose max-w-full ai-content flex flex-col h-fit max-h-fit">
+                                        {m.content && (
+                                            <div className={`pt-4 flex flex-col gap-y-3 ${m.role === 'assistant' ? 'pb-4' : ''} ${m.role === 'user' ? 'pb-4' : ''}`}>
+                                                <MemoizedMarkdown id={m.id} content={m.content} />
+                                            </div>
+                                        )}
 
-                                            <MemoizedMarkdown id={m.id} content={m.content} />
-                                        </div>
-                                    )}
 
-                                    {m.id === lastAssistantMessage?.id && (status === 'submitted' || status === 'streaming') && (
+
+                                        {m.toolInvocations?.some(invocation => invocation.state === 'result') && (
+                                            <div className="flex flex-col gap-x-2  max-h-fit border-t border-zinc-200/80 pb-4">
+                                                <button
+                                                    className="expand-tools flex items-center gap-x-2.5 mt-3.5 focus:outline-none"
+                                                    onClick={() => toggleToolExpansion(m.id)}
+                                                    disabled={isStreaming} // Disable button while AI is streaming
+                                                >
+                                                    {/* Show LoadingSpinner while AI is still streaming */}
+                                                    {isStreaming ? (
+                                                        <LoadingSpinner className="w-4 h-4" />
+                                                    ) : expandedTools[m.id] ? (
+                                                        <ChevronUpIcon className="h-3.5 w-3.5 stroke-2 transition-transform duration-300" />
+                                                    ) : (
+                                                        <ChevronDownIcon className="h-3.5 w-3.5 stroke-2 transition-transform duration-300" />
+                                                    )}
+                                                    <h5 className="text-sm tracking-tight font-bold">Function calls</h5>
+                                                </button>
+
+                                                {/* Render ToolOutput only if expanded */}
+                                                {expandedTools[m.id] && (
+                                                    <div className="transition-opacity duration-300 opacity-100 pt-1.5 flex flex-col divide-y divide-zinc-200">
+                                                        {m.toolInvocations.map((invocation, index) =>
+                                                            invocation.state === 'result' ? (
+                                                                <ToolOutput key={index} toolName={invocation.toolName} result={invocation.result} id={m.id} />
+                                                            ) : null
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.div>
+
+                                <AnimatePresence mode="popLayout">
+                                    {m.role === "assistant" && index === messages.length - 1 && status === "streaming" && (
                                         <motion.div
-                                            key="thinking"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
+                                            key={`loading-${m.id}`}
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: "auto" }}
+                                            exit={{ opacity: 0, height: 0 }}
                                             transition={{ duration: 0.2, ease: "easeInOut" }}
                                             className="flex items-center gap-2 py-4"
                                         >
-                                            <span className="text-md animate-pulse"><LoadingSpinner /></span>
-                                            <button className="hidden" type="button" onClick={() => stop()}>
+                                            <span className="text-md animate-pulse">
+                                                <LoadingSpinner />
+                                            </span>
+                                            <button className="text-xs font-bold uppercase ml-1 text-zinc-600" type="button" onClick={() => stop()}>
                                                 Stop
                                             </button>
                                         </motion.div>
                                     )}
-
-                                    {m.toolInvocations?.some(invocation => invocation.state === 'result') && (
-                                        <div className="flex flex-col gap-x-2  max-h-fit border-t border-zinc-200/80 pb-4">
-                                            <button
-                                                className="expand-tools flex items-center gap-x-2.5 mt-3.5 focus:outline-none"
-                                                onClick={() => toggleToolExpansion(m.id)}
-                                                disabled={isStreaming} // Disable button while AI is streaming
-                                            >
-                                                {/* Show LoadingSpinner while AI is still streaming */}
-                                                {isStreaming ? (
-                                                    <LoadingSpinner className="w-4 h-4" />
-                                                ) : expandedTools[m.id] ? (
-                                                    <ChevronUpIcon className="h-3.5 w-3.5 stroke-2 transition-transform duration-300" />
-                                                ) : (
-                                                    <ChevronDownIcon className="h-3.5 w-3.5 stroke-2 transition-transform duration-300" />
-                                                )}
-                                                <h5 className="text-sm tracking-tight font-bold">Function calls</h5>
-                                            </button>
-
-                                            {/* Render ToolOutput only if expanded */}
-                                            {expandedTools[m.id] && (
-                                                <div className="transition-opacity duration-300 opacity-100 pt-1.5 flex flex-col divide-y divide-zinc-200">
-                                                    {m.toolInvocations.map((invocation, index) =>
-                                                        invocation.state === 'result' ? (
-                                                            <ToolOutput key={index} toolName={invocation.toolName} result={invocation.result} id={m.id} />
-                                                        ) : null
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
+                                </AnimatePresence>
+                            </motion.div>
                         </AnimatePresence>
                     </div>
                 ))}

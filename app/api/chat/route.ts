@@ -33,6 +33,7 @@ export async function POST(req: Request) {
     10) Always inform the user about what you are doing and why you are doing it before proceeding.
     11) Use the GiphyTools to search for GIFs when needed.
     12) Use the imageVision tool to analyze images and provide a description. Provide an image URL to process.
+    13) Always output quotes using the outputQuote tool. Use the tvlySearch tool to find real quotes including their authors and the source, before outputting a quote using this tool.
     13) When outputting quotes, always add > in front of the quote it self and to place the author below the quote, to make sure it's formatted correctly.
     `,
 
@@ -178,21 +179,20 @@ export async function POST(req: Request) {
                     }
                 },
             }),
-            generateQuote: tool({
-                description: 'Generate an inspirational or topical quote. Returns a JSON object containing the quote and its details. Always use the tvlySearch to find quotes, their authors and sources from the web before generating a quote. Please make sure to prompt the tvlySearch tool with the explicit need of the authors too.',
+            outputQuote: tool({
+                description: 'Output a quote based on user inquiry. Always use the tvlySearch to find real quotes including their authors and the source, before outputting a quote using this tool.',
                 parameters: z.object({
-                    topic: z.string().default("inspiration").describe('The topic or theme of the quote'),
-                    style: z.string().default("motivational").describe('The style of the quote (e.g., motivational, philosophical, humorous)'),
-                    length: z.string().default("medium").describe('The desired length of the quote (short, medium, long)'),
-                    source: z.string().describe('Results from tvlySearch tool'),
+                    quote: z.string().default("inspiration").describe('The topic or theme of the quote'),
+                    author: z.string().default("motivational").describe('The style of the quote (e.g., motivational, philosophical, humorous)'),
+                    source: z.string().describe('Results from tvlySearch tool')
                 }),
 
-                execute: async ({ topic, style, length, source }) => {
+                execute: async ({ quote, author, source }) => {
                     try {
                         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/generateQuote`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ topic, style, length, source }),
+                            body: JSON.stringify({ quote, author, source }),
                             cache: 'no-store',
                         });
 
@@ -206,7 +206,142 @@ export async function POST(req: Request) {
                 },
             }),
 
-            ...giphyTools({ apiKey: process.env.GIPHY_API_KEY || '' }),
+
+            saveCourseToBlob: tool({
+                description: "Save, retrieve, or edit a course in JSON blob storage",
+                parameters: z.object({
+                    action: z.enum(["save", "get", "edit"]).describe("Action to perform: save, get, or edit"),
+                    id: z.string().describe("Unique course ID"),
+                    content: z.record(z.string(), z.any()).optional().describe("Course content (for save)"),
+                    key: z.string().optional().describe("Key to edit (for edit action)"),
+                    value: z.any().optional().describe("New value (for edit action)"),
+                }),
+                execute: async ({ action, id, content, key, value }) => {
+                    try {
+                        console.log("🔹 saveCourseToBlob called with:", { action, id, content, key, value });
+                
+                        const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+                        let response;
+                
+                        if (action === "save") {
+                            console.log("📌 Sending POST request to save new course...");
+                            response = await fetch(`${BASE_URL}/api/course/blob`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ id, content }),
+                            });
+                        } 
+                        
+                        else if (action === "get") {
+                            console.log(`📌 Sending GET request to fetch course: ${id}`);
+                            response = await fetch(`${BASE_URL}/api/course/blob?id=${id}`);
+                        } 
+                        
+                        else if (action === "edit") {
+                            console.log(`📌 Checking if course exists before editing: ${id}`);
+                
+                            // First, check if the course exists
+                            let fetchResponse = await fetch(`${BASE_URL}/api/course/blob?id=${id}`);
+                
+                            if (!fetchResponse.ok) {
+                                console.error(`❌ Course not found: ${id}, creating new one instead.`);
+                                
+                                // If the course doesn't exist, create it with default content
+                                let newCourseContent = {
+                                    title: "Untitled Course",
+                                    description: ["No description available."],
+                                    chapters: [],
+                                };
+                
+                                let createResponse = await fetch(`${BASE_URL}/api/course/blob`, {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ id, content: newCourseContent }),
+                                });
+                
+                                if (!createResponse.ok) {
+                                    console.error("❌ Failed to create new course.");
+                                    return { error: "Failed to create new course before editing." };
+                                }
+                
+                                console.log(`✅ New course created with ID: ${id}`);
+                            }
+                
+                            // Now proceed with the edit
+                            console.log(`📌 Sending PUT request to edit course: ${id}, key: ${key}`);
+                            response = await fetch(`${BASE_URL}/api/course/blob`, {
+                                method: "PUT",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ id, key, value }),
+                            });
+                        } 
+                        
+                        else {
+                            throw new Error("Invalid action specified");
+                        }
+                
+                        console.log("🔍 Checking API response...");
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error(`❌ API Error [${response.status}]:`, errorText);
+                            return { error: `API Error: ${response.status} - ${errorText}` };
+                        }
+                
+                        const data = await response.json();
+                        console.log("✅ API Response:", data);
+                        return data;
+                
+                    } catch (error) {
+                        console.error("❌ Error processing course data:", error);
+                        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+                        return { error: `Failed to process course data: ${errorMessage}` };
+                    }
+                },
+                
+                            }),
+                        
+        
+
+        // Commented out streamText tool
+        /*
+        streamText: tool({
+            description: 'An assistant named streamText. Inform the user that the agent answered and then the response',
+            parameters: z.object({
+                query: z.string().describe('Your query'),
+            }),
+            execute: async ({ query }) => {
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/streamText`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ query }),
+                        cache: 'no-store',
+                    });
+            
+                    // Read the streamed response and construct a usable text output
+                    const reader = response.body?.getReader();
+                    let resultText = "";
+            
+                    if (reader) {
+                        const decoder = new TextDecoder();
+                        let done = false;
+                        while (!done) {
+                            const { value, done: readerDone } = await reader.read();
+                            if (value) resultText += decoder.decode(value, { stream: true });
+                            done = readerDone;
+                        }
+                    }
+            
+                    return { text: resultText.trim() };
+                } catch (error) {
+                    console.error("Error in streamText tool:", error);
+                    return { error: "Failed to retrieve streamed text response." };
+                }
+            }
+        }),
+        */
+
+            //...giphyTools({ apiKey: process.env.GIPHY_API_KEY || '' }),
         },
         maxSteps: 30,
     });
