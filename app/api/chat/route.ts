@@ -85,9 +85,8 @@ export async function POST(req: Request) {
                             searchDepth: 'advanced',
                             topic: 'general',
                             maxResults: 3,
-                            includeImages: false,
                             includeImageDescriptions: false,
-                            includeAnswer: false,
+                            includeAnswer: true,
                             includeRawContent: false,
                             includeDomains: [],
                             excludeDomains: [],
@@ -178,6 +177,34 @@ export async function POST(req: Request) {
                     }
                 },
             }),
+            generateQuote: tool({
+                description: 'Generate an inspirational or topical quote. Returns a JSON object containing the quote and its details. Always use the tvlySearch to find quotes, their authors and sources from the web before generating a quote. Please make sure to prompt the tvlySearch tool with the explicit need of the authors too.',
+                parameters: z.object({
+                    topic: z.string().default("inspiration").describe('The topic or theme of the quote'),
+                    style: z.string().default("motivational").describe('The style of the quote (e.g., motivational, philosophical, humorous)'),
+                    length: z.string().default("medium").describe('The desired length of the quote (short, medium, long)'),
+                    source: z.string().describe('Results from tvlySearch tool'),
+                }),
+
+                execute: async ({ topic, style, length, source }) => {
+                    try {
+                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/generateQuote`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ topic, style, length, source }),
+                            cache: 'no-store',
+                        });
+
+                        const data = await response.json();
+                        console.log("generateQuote API response:", data);
+                        return data;
+                    } catch (error) {
+                        console.error("Error executing generateQuote tool:", error);
+                        return { error: "An error occurred while generating the quote." };
+                    }
+                },
+            }),
+
             ...giphyTools({ apiKey: process.env.GIPHY_API_KEY || '' }),
         },
         maxSteps: 30,

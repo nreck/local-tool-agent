@@ -10,19 +10,32 @@ const openai2 = createOpenAICompatible({
 
 export async function POST(req: Request) {
     try {
-        const { imageUrl, prompt } = await req.json();
+        // Log incoming request
+        console.log("Incoming imageVision request...");
+
+        const body = await req.json();
+        console.log("Received payload:", JSON.stringify(body, null, 2));
+
+        const { imageUrl, prompt } = body;
 
         if (!imageUrl) {
+            console.error("Error: Missing imageUrl");
             return new Response(JSON.stringify({ error: "Image URL is required" }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' },
             });
         }
 
+        console.log("Calling generateObject with:");
+        console.log("Model: llava-v1.5-7b");
+        console.log("Image URL:", imageUrl);
+        console.log("Prompt:", prompt || "No additional instructions provided");
+
+        // Structured image analysis request
         const response = await generateObject({
             model: openai2('llava-v1.5-7b'),
             system: `You are a visual descriptor assistant that describes images and extracts information from them. Your output MUST be valid JSON and follow the given schema.`,
-            prompt: prompt ? `Analyze these images: ${imageUrl}. ${prompt}` : `Analyze these images: ${imageUrl}`,
+            prompt: `Analyze the following image:\n\n${imageUrl}\n\nAdditional instructions: ${prompt || "Provide a detailed description."}`,
             temperature: 0.2,
             schema: z.object({
                 imageVision: z.array(z.object({
@@ -39,12 +52,26 @@ export async function POST(req: Request) {
             }),
         });
 
-        console.log("Image analysis result:", JSON.stringify(response, null, 2));
+        // Log the full response from the AI
+        console.log("AI Response:", JSON.stringify(response, null, 2));
+
         return Response.json(response);
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error in image analysis:", error);
-        return new Response(JSON.stringify({ error: "Failed to analyze image" }), {
+
+        // Log additional error details if available
+        if (error.response) {
+            console.error("Error Response Data:", JSON.stringify(error.response, null, 2));
+        }
+        if (error.text) {
+            console.error("Error Text:", error.text);
+        }
+        if (error.usage) {
+            console.error("Usage Info:", JSON.stringify(error.usage, null, 2));
+        }
+
+        return new Response(JSON.stringify({ error: "Failed to analyze image", details: error.message || error }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
         });

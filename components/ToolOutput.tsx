@@ -14,6 +14,21 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [showFullJson, setShowFullJson] = useState(false);
 
+    // Move the JSON string memoization outside the map function
+    const memoizedResults = useMemo(() => {
+        return Object.entries(result).map(([key, value]) => {
+            if (typeof value === "object" && value !== null) {
+                const json = JSON.stringify(value, null, 2) ?? "{}";
+                return {
+                    key,
+                    value,
+                    jsonString: json.length > 5000 ? json.slice(0, 5000) + "... (truncated)" : json
+                };
+            }
+            return { key, value, jsonString: null };
+        });
+    }, [result]);
+
     return (
         <div className="inline items-center w-full min-w-full py-2">
             {/* Expand/Collapse Button */}
@@ -41,8 +56,8 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
                         </span>
                     </div>
 
-                    {/* Dynamic Key-Value Pairs */}
-                    {Object.entries(result).map(([key, value]) => {
+                    {/* Updated mapping using memoizedResults */}
+                    {memoizedResults.map(({ key, value, jsonString }) => {
                         // 1) Special case: 'results' array from search tools
                         if (key === "results" && Array.isArray(value)) {
                             return (
@@ -96,12 +111,7 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
                         }
 
                         // 3) Default case: Render JSON objects with optimized syntax highlighting
-                        if (typeof value === "object" && value !== null) {
-                            const jsonString = useMemo(() => {
-                                const json = JSON.stringify(value, null, 2) ?? "{}";
-                                return json.length > 5000 ? json.slice(0, 5000) + "... (truncated)" : json;
-                            }, [value]);
-
+                        if (typeof value === "object" && value !== null && jsonString) {
                             return (
                                 <div
                                     key={key}
@@ -110,9 +120,9 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
                                     <span className="pb-1 font-semibold text-xs text-zinc-900">{key}:</span>
                                     <button
                                         onClick={() => setShowFullJson((prev) => !prev)}
-                                        className="text-xs text-blue-600 underline my-1"
+                                        className="text-xs font-medium text-sky-600 font-mono my-1 ml-1"
                                     >
-                                        {showFullJson ? "Hide JSON" : "Show Full JSON"}
+                                        {showFullJson ? "Hide" : "JSON"}
                                     </button>
 
                                     {showFullJson && (

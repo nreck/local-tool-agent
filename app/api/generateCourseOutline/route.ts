@@ -1,3 +1,4 @@
+// @/app/api/generateCourseOutline/route.ts
 import { generateObject } from 'ai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { z } from 'zod';

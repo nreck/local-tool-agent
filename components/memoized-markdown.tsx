@@ -17,6 +17,11 @@ const MemoizedMarkdownBlock = memo(
                     li: ({ children }) => <li className="inline-table max-h-fit py-1">{children}</li>,
                     strong: ({ children }) => <strong className="font-semibold ">{children}</strong>,
                     a: ({ children, href }) => <a href={href} className="text-sky-500 font-medium max-w-fit">{children}</a>,
+                    blockquote: ({ children }) => (
+                        <blockquote className="border-l-4 border-zinc-200 pl-4 my-4 italic text-zinc-700">
+                            {children}
+                        </blockquote>
+                    ),
                     img: ({ src, alt }) => {
                         if (!src) return null;
 
