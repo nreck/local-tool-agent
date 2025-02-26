@@ -8,6 +8,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import { ChevronDownIcon, ChevronUpIcon, PaperClipIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import StartScreen from '@/components/StartScreen';
 import { motion, AnimatePresence } from 'framer-motion';
+import CourseEditor from '@/components/courseEditor';
 
 export default function Chat() {
     const { messages, input, handleInputChange, handleSubmit, append, status, stop } = useChat();
@@ -21,7 +22,14 @@ export default function Chat() {
     const [expandedTools, setExpandedTools] = useState<Record<string, boolean>>({});
     const [isStreaming, setIsStreaming] = useState(false); // Track if AI is currently streaming
     const [showStartScreen, setShowStartScreen] = useState(true); // Track if StartScreen should be visible
+    const [openEditor, setOpenEditor] = useState<{ id: string; visible: boolean } | null>(null);
 
+
+// When tool-invocation happens, trigger editor
+const handleOpenEditor = (id: string) => {
+    setOpenEditor({ id, visible: true });
+  };
+  
     // Hide StartScreen when a message is sent
     useEffect(() => {
         if (messages.length > 0) {
@@ -130,6 +138,8 @@ export default function Chat() {
         }));
     };
 
+
+
     return (
         <div
             ref={chatContainerRef}
@@ -172,7 +182,53 @@ export default function Chat() {
                                             </div>
                                         )}
 
+                                        {m.parts.map((part, partIndex) => {
+                                            if (part.type === 'tool-invocation' && part.toolInvocation.toolName === 'saveCourseToBlob') {
+                                                const action = part.toolInvocation.args?.action; // Extract action from input
+                                                const isEditorAction = ["save", "get", "edit", "result"].includes(action); // Check if it's an editor-triggering action
+                                                const responseId = part.toolInvocation.state === 'result' ? part.toolInvocation.result?.id : undefined; // Extract id from response
 
+                                                return (
+                                                    <div key={`part-${m.id}-${partIndex}`} className="p-3 border rounded-md bg-gray-100">
+                                                        {/* Tool Name */}
+                                                        <p className="font-bold text-sm text-gray-900">Tool: {part.toolInvocation.toolName}</p>
+
+                                                        {/* Tool State */}
+                                                        <p className="text-xs text-gray-600">State: {part.toolInvocation.state}</p>
+
+                                                        {/* Tool Input Arguments */}
+                                                        {"args" in part.toolInvocation && part.toolInvocation.args && (
+                                                            <div className="mt-2">
+                                                                <p className="text-xs font-bold">Input:</p>
+                                                                <pre className="bg-gray-200 p-2 rounded-md text-xs text-gray-700 overflow-auto">
+                                                                    {JSON.stringify(part.toolInvocation.args, null, 2)}
+                                                                </pre>
+                                                            </div>
+                                                        )}
+
+                                                        {/* Tool Response Output (only if state is 'result') */}
+                                                        {part.toolInvocation.state === "result" && "result" in part.toolInvocation && (
+                                                            <div className="mt-2">
+                                                                <p className="text-xs font-bold">Response:</p>
+                                                                <pre className="bg-green-200 p-2 rounded-md text-xs text-gray-700 overflow-auto">
+                                                                    {JSON.stringify(part.toolInvocation.result, null, 2)}
+                                                                </pre>
+                                                            </div>
+                                                        )}
+
+                                                        {isEditorAction && responseId && (
+                                                            <div className="fixed top-0 right-0 mt-2">
+                                                                <p className="text-blue-600 font-semibold">
+                                                                    Editor was triggered with id <span className="font-bold">{responseId}</span>
+                                                                </p>
+                                                                <CourseEditor courseId={responseId} onSave={(updatedContent) => console.log("Saved:", updatedContent)} />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
+                                        })}
 
                                         {m.toolInvocations?.some(invocation => invocation.state === 'result') && (
                                             <div className="flex flex-col gap-x-2  max-h-fit border-t border-zinc-200/80 pb-4">

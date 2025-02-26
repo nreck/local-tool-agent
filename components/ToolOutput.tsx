@@ -34,7 +34,7 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
             {/* Expand/Collapse Button */}
             <button
                 onClick={() => setIsExpanded((prev) => !prev)}
-                className="flex items-center gap-x-1.5 font-bold font-mono text-xs focus:outline-none"
+                className="flex items-center gap-x-1.5 font-medium text-sm focus:outline-none"
             >
                 {isExpanded ? (
                     <ChevronUpIcon className="h-3.5 w-3.5 stroke-2 transition-transform duration-300" />
@@ -51,7 +51,7 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
                     {/* Tool Name Header */}
                     <div className="flex items-start gap-x-1.5 border border-zinc-200 pr-0 pl-2 rounded-md max-w-fit from-zinc-50 bg-gradient-to-br via-80% via-zinc-400/10 to-white overflow-hidden font-semibold text-xs tracking-tight">
                         <span className="py-1.5 min-w-[80px] text-zinc-900">Tool</span>
-                        <span className="text-xs font-mono font-normal tracking-wide text-zinc-900 bg-white/80 border-l border-zinc-200 px-2.5 py-1.5">
+                        <span className="text-xs font-normal tracking-wide text-zinc-900 bg-white/80 border-l border-zinc-200 px-2.5 py-1.5">
                             {toolName}
                         </span>
                     </div>
@@ -120,7 +120,7 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
                                     <span className="pb-1 font-semibold text-xs text-zinc-900">{key}:</span>
                                     <button
                                         onClick={() => setShowFullJson((prev) => !prev)}
-                                        className="text-xs font-medium text-sky-600 font-mono my-1 ml-1"
+                                        className="text-xs font-medium text-sky-600 my-1 ml-1"
                                     >
                                         {showFullJson ? "Hide" : "JSON"}
                                     </button>

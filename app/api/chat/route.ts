@@ -208,138 +208,126 @@ export async function POST(req: Request) {
 
 
             saveCourseToBlob: tool({
-                description: "Save, retrieve, or edit a course in JSON blob storage",
-                parameters: z.object({
-                    action: z.enum(["save", "get", "edit"]).describe("Action to perform: save, get, or edit"),
-                    id: z.string().describe("Unique course ID"),
-                    content: z.record(z.string(), z.any()).optional().describe("Course content (for save)"),
-                    key: z.string().optional().describe("Key to edit (for edit action)"),
-                    value: z.any().optional().describe("New value (for edit action)"),
-                }),
-                execute: async ({ action, id, content, key, value }) => {
-                    try {
-                        console.log("🔹 saveCourseToBlob called with:", { action, id, content, key, value });
-                
-                        const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-                        let response;
-                
-                        if (action === "save") {
-                            console.log("📌 Sending POST request to save new course...");
-                            response = await fetch(`${BASE_URL}/api/course/blob`, {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ id, content }),
-                            });
-                        } 
-                        
-                        else if (action === "get") {
-                            console.log(`📌 Sending GET request to fetch course: ${id}`);
-                            response = await fetch(`${BASE_URL}/api/course/blob?id=${id}`);
-                        } 
-                        
-                        else if (action === "edit") {
-                            console.log(`📌 Checking if course exists before editing: ${id}`);
-                
-                            // First, check if the course exists
-                            let fetchResponse = await fetch(`${BASE_URL}/api/course/blob?id=${id}`);
-                
-                            if (!fetchResponse.ok) {
-                                console.error(`❌ Course not found: ${id}, creating new one instead.`);
-                                
-                                // If the course doesn't exist, create it with default content
-                                let newCourseContent = {
-                                    title: "Untitled Course",
-                                    description: ["No description available."],
-                                    chapters: [],
-                                };
-                
-                                let createResponse = await fetch(`${BASE_URL}/api/course/blob`, {
-                                    method: "POST",
-                                    headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({ id, content: newCourseContent }),
-                                });
-                
-                                if (!createResponse.ok) {
-                                    console.error("❌ Failed to create new course.");
-                                    return { error: "Failed to create new course before editing." };
-                                }
-                
-                                console.log(`✅ New course created with ID: ${id}`);
-                            }
-                
-                            // Now proceed with the edit
-                            console.log(`📌 Sending PUT request to edit course: ${id}, key: ${key}`);
-                            response = await fetch(`${BASE_URL}/api/course/blob`, {
-                                method: "PUT",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ id, key, value }),
-                            });
-                        } 
-                        
-                        else {
-                            throw new Error("Invalid action specified");
-                        }
-                
-                        console.log("🔍 Checking API response...");
-                        if (!response.ok) {
-                            const errorText = await response.text();
-                            console.error(`❌ API Error [${response.status}]:`, errorText);
-                            return { error: `API Error: ${response.status} - ${errorText}` };
-                        }
-                
-                        const data = await response.json();
-                        console.log("✅ API Response:", data);
-                        return data;
-                
-                    } catch (error) {
-                        console.error("❌ Error processing course data:", error);
-                        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-                        return { error: `Failed to process course data: ${errorMessage}` };
-                    }
-                },
-                
-                            }),
-                        
-        
+    description: "Save, retrieve, edit, or list all courses in JSON blob storage",
+    parameters: z.object({
+        action: z.enum(["save", "get", "edit", "list"]).describe("Action to perform: save, get, edit, or list all courses"),
+        title: z.string().optional().describe("Course title (needed for 'save', not 'list' or 'get')"),
+        id: z.string().optional().describe("Unique course ID (needed for 'get' and 'edit')"),
+        content: z.record(z.string(), z.any()).optional().describe("Course content (for save)"),
+        key: z.string().optional().describe("Key to edit (for edit action)"),
+        value: z.any().optional().describe("New value (for edit action)"),
+    }),
+    execute: async ({ action, title, id, content, key, value }) => {
+        try {
+            console.log("🔹 saveCourseToBlob called with:", { action, title, id, content, key, value });
 
-        // Commented out streamText tool
-        /*
-        streamText: tool({
-            description: 'An assistant named streamText. Inform the user that the agent answered and then the response',
-            parameters: z.object({
-                query: z.string().describe('Your query'),
-            }),
-            execute: async ({ query }) => {
-                try {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/streamText`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ query }),
-                        cache: 'no-store',
-                    });
-            
-                    // Read the streamed response and construct a usable text output
-                    const reader = response.body?.getReader();
-                    let resultText = "";
-            
-                    if (reader) {
-                        const decoder = new TextDecoder();
-                        let done = false;
-                        while (!done) {
-                            const { value, done: readerDone } = await reader.read();
-                            if (value) resultText += decoder.decode(value, { stream: true });
-                            done = readerDone;
-                        }
-                    }
-            
-                    return { text: resultText.trim() };
-                } catch (error) {
-                    console.error("Error in streamText tool:", error);
-                    return { error: "Failed to retrieve streamed text response." };
+            const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+            let response;
+
+            if (action === "save") {
+                if (!title || !content) {
+                    return { error: "Title and content are required to save a course." };
                 }
+                console.log("📌 Sending POST request to save new course...");
+                response = await fetch(`${BASE_URL}/api/course/blob`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ title, content }),
+                });
+            } 
+            
+            else if (action === "get") {
+                if (!id) {
+                    return { error: "Course ID is required to retrieve a course." };
+                }
+                console.log(`📌 Sending GET request to fetch course: ${id}`);
+                response = await fetch(`${BASE_URL}/api/course/blob?id=${id}`);
+            } 
+            
+            else if (action === "edit") {
+                if (!id || !key || value === undefined) {
+                    return { error: "Course ID, key, and new value are required for editing." };
+                }
+                console.log(`📌 Sending PUT request to edit course: ${id}, key: ${key}`);
+                response = await fetch(`${BASE_URL}/api/course/blob`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id, key, value }),
+                });
+            } 
+            
+            else if (action === "list") { 
+                console.log("📌 Sending GET request to list all courses...");
+                response = await fetch(`${BASE_URL}/api/course/blob`);
+            } 
+            
+            else {
+                throw new Error("Invalid action specified");
             }
-        }),
-        */
+
+            console.log("🔍 Checking API response...");
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`❌ API Error [${response.status}]:`, errorText);
+                return { error: `API Error: ${response.status} - ${errorText}` };
+            }
+
+            const data = await response.json();
+            console.log("✅ API Response:", data);
+
+            return data;
+        } catch (error) {
+            console.error("❌ Error processing course data:", error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+            return { error: `Failed to process course data: ${errorMessage}` };
+        }
+    },
+})
+
+            
+            
+            
+
+
+
+            // Commented out streamText tool
+            /*
+            streamText: tool({
+                description: 'An assistant named streamText. Inform the user that the agent answered and then the response',
+                parameters: z.object({
+                    query: z.string().describe('Your query'),
+                }),
+                execute: async ({ query }) => {
+                    try {
+                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/streamText`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ query }),
+                            cache: 'no-store',
+                        });
+                
+                        // Read the streamed response and construct a usable text output
+                        const reader = response.body?.getReader();
+                        let resultText = "";
+                
+                        if (reader) {
+                            const decoder = new TextDecoder();
+                            let done = false;
+                            while (!done) {
+                                const { value, done: readerDone } = await reader.read();
+                                if (value) resultText += decoder.decode(value, { stream: true });
+                                done = readerDone;
+                            }
+                        }
+                
+                        return { text: resultText.trim() };
+                    } catch (error) {
+                        console.error("Error in streamText tool:", error);
+                        return { error: "Failed to retrieve streamed text response." };
+                    }
+                }
+            }),
+            */
 
             //...giphyTools({ apiKey: process.env.GIPHY_API_KEY || '' }),
         },
