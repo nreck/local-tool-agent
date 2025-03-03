@@ -28,28 +28,30 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ courseId, onSave }) => {
   const [saving, setSaving] = useState<boolean>(false);
 
   // ✅ Auto-refresh every 5 seconds
-useEffect(() => {
+  useEffect(() => {
     const fetchCourse = async () => {
-        setLoading(true);
-        try {
-            const data = await getCourseById(courseId);
-            if ("error" in data) throw new Error(data.error);
-
-            // ✅ Only update if content has actually changed
-            setCourseData(prevData => 
-                JSON.stringify(prevData?.content) !== JSON.stringify(data.content) ? data : prevData
-            );
-        } catch (err: any) {
-            setError(err.message || "Failed to load course");
-        } finally {
-            setLoading(false);
-        }
+      setLoading(true);
+      try {
+        const data = await getCourseById(courseId);
+        if ("error" in data) throw new Error(data.error);
+  
+        // ✅ Only update if content has actually changed
+        setCourseData(prevData => 
+          JSON.stringify(prevData?.content) !== JSON.stringify(data.content) ? data : prevData
+        );
+      } catch (err: any) {
+        setError(err.message || "Failed to load course");
+      } finally {
+        setLoading(false);
+      }
     };
-
+  
     if (courseId) {
-        fetchCourse();
+      fetchCourse();
+      const interval = setInterval(fetchCourse, 5000);
+      return () => clearInterval(interval);
     }
-}, [courseId]);
+  }, [courseId]);
     
   
 
@@ -80,8 +82,6 @@ useEffect(() => {
             setCourseData({ ...courseData, chapters: updatedChapters });
           }
         }
-        editor.view.dispatch(editor.state.tr.setMeta("preventDispatch", true));
-
       },
       
   });
@@ -114,7 +114,7 @@ useEffect(() => {
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
-    <div className="">
+    <div className="p-4 border rounded-md shadow-md bg-white">
       <h2 className="text-lg font-bold mb-2">Editing: {courseData?.title}</h2>
       <EditorContent editor={editor} />
 

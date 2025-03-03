@@ -30,7 +30,7 @@ const promptTemplates = [
 
 const StartScreen = ({ onPromptClick }: StartScreenProps) => {
   return (
-    <div className="flex flex-col items-center space-y-5">
+    <div className="flex fixed top-[28vh] flex-col z-50 items-center space-y-5">
       <div className="flex flex-col items-center space-y-1 mb-3">
       <h2 className="text-xl font-medium text-zinc-600"><span className="font-semibold text-zinc-900">Learning agent </span><span className="font-light">/</span> Client interface</h2>
       <span className="text-zinc-500 text-sm mt-0.5">Currently running on Qwen-2.5-14B</span>

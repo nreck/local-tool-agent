@@ -1,4 +1,3 @@
-// @/app/chat/page.tsx
 "use client"
 import { useEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
@@ -8,7 +7,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import { ChevronDownIcon, ChevronUpIcon, PaperClipIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import StartScreen from '@/components/StartScreen';
 import { motion, AnimatePresence } from 'framer-motion';
-import CourseEditor from '@/components/courseEditor';
+import LiveCourseClient from '@/app/live-course/[courseId]/LiveCourseClient'; // Adjust the import path as necessary
 
 export default function Chat() {
     const { messages, input, handleInputChange, handleSubmit, append, status, stop } = useChat();
@@ -17,19 +16,16 @@ export default function Chat() {
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
     const [uploadedImages, setUploadedImages] = useState<string[]>([]); // Store image URLs
+    const [triggeredCourseId, setTriggeredCourseId] = useState<string | null>(null); // State to manage triggered courseId
+    const [openLiveCourseId, setOpenLiveCourseId] = useState<string | null>(null);
+    const [isEditorActive, setIsEditorActive] = useState<boolean>(false);
 
     const [autoScroll, setAutoScroll] = useState(true);
     const [expandedTools, setExpandedTools] = useState<Record<string, boolean>>({});
     const [isStreaming, setIsStreaming] = useState(false); // Track if AI is currently streaming
     const [showStartScreen, setShowStartScreen] = useState(true); // Track if StartScreen should be visible
-    const [openEditor, setOpenEditor] = useState<{ id: string; visible: boolean } | null>(null);
+    const [selectedResponseId, setSelectedResponseId] = useState<string | null>(null);
 
-
-// When tool-invocation happens, trigger editor
-const handleOpenEditor = (id: string) => {
-    setOpenEditor({ id, visible: true });
-  };
-  
     // Hide StartScreen when a message is sent
     useEffect(() => {
         if (messages.length > 0) {
@@ -138,12 +134,15 @@ const handleOpenEditor = (id: string) => {
         }));
     };
 
-
+    const handleCloseLiveView = () => {
+        setOpenLiveCourseId(null);
+        setIsEditorActive(false);
+    };
 
     return (
         <div
             ref={chatContainerRef}
-            className="flex flex-col w-full pt-16 pb-36 mx-auto stretch overflow-y-auto h-screen no-scrollbar"
+            className="flex flex-col w-full pt-0 mx-auto stretch overflow-y-auto h-screen no-scrollbar"
         >
             {/* Show StartScreen only if no messages exist */}
             {showStartScreen && (
@@ -151,141 +150,158 @@ const handleOpenEditor = (id: string) => {
                     <StartScreen onPromptClick={handlePredefinedPrompt} />
                 </div>
             )}
-            <div className="flex flex-col gap-y-3.5 w-full max-w-2xl mx-auto">
-                {messages.map((m, index) => (
-                    <div key={m.id} className="flex border border-transparent rounded-xl min-w-full w-full max-w-full h-fit max-h-fit overflow-hidden">
-                        <div className="pr-5 pt-3">
-                            {m.role === 'user' ? (
-                                <div className="font-bold p-2 mb-3 mt-0.5 bg-zinc-300/80 text-white rounded-full overflow-hiden  w-8 h-8">
+            <div className="flex w-full max-w-screen mx-auto min-h-screen h-fit">
+
+
+                <div className=" w-full max-w-2xl mx-auto flex flex-col justify-between relative">
+                    <div className='h-screen max-h-screen overflow-y-scroll no-scrollbar flex flex-col gap-y-3.5 pt-10 pb-20'>
+                        {messages.map((m, index) => (
+                            <div key={m.id} className="flex rounded-xl min-w-full w-full max-w-full h-fit min-h-fit max-h-fit overflow-hidden">
+                                <div className="pr-5 pt-3">
+                                    {m.role === 'user' ? (
+                                        <div className="font-bold mb-3 mt-0.5 bg-zinc-900 text-white rounded-full max-w-fit overflow-hidden w-8 h-8">
+                                            <img src="user_avatar.jpg" className='w-full h-fit' />
+                                        </div>
+                                    ) : (
+                                        <div className="font-bold mb-3 mt-0.5 bg-zinc-900 text-white rounded-full max-w-fit overflow-hidden w-8 h-8">
+                                            <img src="avatar.jpeg" className='w-full h-fit' />
+                                        </div>
+                                    )}
                                 </div>
-                            ) : (
-                                <div className="font-bold mb-3 mt-0.5 bg-zinc-900 text-white rounded-full max-w-fit max-h-fit overflow-hidden w-8 h-8">
-                                    <img src="avatar.jpeg" className='w-full h-full' />
-                                </div>
-                            )}
-                        </div>
-                        <AnimatePresence mode="popLayout">
-                            <motion.div initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                transition={{ duration: 0.2, ease: "easeInOut" }} className='flex flex-col'>
+                                <AnimatePresence mode="popLayout">
+                                    <motion.div initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        transition={{ duration: 0.2, ease: "easeInOut" }} className='flex flex-col max-w-full'>
 
-                                <motion.div initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    transition={{ duration: 0.2, ease: "easeInOut" }} className={`whitespace-pre-wrap px-4 border rounded-xl w-full max-w-full h-fit max-h-fit  ${m.role === 'assistant' ? 'bg-zinc-50/80  border-zinc-200' : 'bg-zinc-100/0 border-zinc-200'}`}>
+                                        <motion.div initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            transition={{ duration: 0.2, ease: "easeInOut" }} className={`whitespace-pre-wrap px-4 border rounded-xl w-full max-w-full h-fit max-h-fit  ${m.role === 'assistant' ? 'bg-zinc-50/80  border-zinc-200' : 'bg-zinc-100/0 border-zinc-200'}`}>
 
-                                    <div className="prose max-w-full ai-content flex flex-col h-fit max-h-fit">
-                                        {m.content && (
-                                            <div className={`pt-4 flex flex-col gap-y-3 ${m.role === 'assistant' ? 'pb-4' : ''} ${m.role === 'user' ? 'pb-4' : ''}`}>
-                                                <MemoizedMarkdown id={m.id} content={m.content} />
-                                            </div>
-                                        )}
-
-                                        {m.parts.map((part, partIndex) => {
-                                            if (part.type === 'tool-invocation' && part.toolInvocation.toolName === 'saveCourseToBlob') {
-                                                const action = part.toolInvocation.args?.action; // Extract action from input
-                                                const isEditorAction = ["save", "get", "edit", "result"].includes(action); // Check if it's an editor-triggering action
-                                                const responseId = part.toolInvocation.state === 'result' ? part.toolInvocation.result?.id : undefined; // Extract id from response
-
-                                                return (
-                                                    <div key={`part-${m.id}-${partIndex}`} className="p-3 border rounded-md bg-gray-100">
-                                                        {/* Tool Name */}
-                                                        <p className="font-bold text-sm text-gray-900">Tool: {part.toolInvocation.toolName}</p>
-
-                                                        {/* Tool State */}
-                                                        <p className="text-xs text-gray-600">State: {part.toolInvocation.state}</p>
-
-                                                        {/* Tool Input Arguments */}
-                                                        {"args" in part.toolInvocation && part.toolInvocation.args && (
-                                                            <div className="mt-2">
-                                                                <p className="text-xs font-bold">Input:</p>
-                                                                <pre className="bg-gray-200 p-2 rounded-md text-xs text-gray-700 overflow-auto">
-                                                                    {JSON.stringify(part.toolInvocation.args, null, 2)}
-                                                                </pre>
-                                                            </div>
-                                                        )}
-
-                                                        {/* Tool Response Output (only if state is 'result') */}
-                                                        {part.toolInvocation.state === "result" && "result" in part.toolInvocation && (
-                                                            <div className="mt-2">
-                                                                <p className="text-xs font-bold">Response:</p>
-                                                                <pre className="bg-green-200 p-2 rounded-md text-xs text-gray-700 overflow-auto">
-                                                                    {JSON.stringify(part.toolInvocation.result, null, 2)}
-                                                                </pre>
-                                                            </div>
-                                                        )}
-
-                                                        {isEditorAction && responseId && (
-                                                            <div className="fixed top-0 right-0 mt-2">
-                                                                <p className="text-blue-600 font-semibold">
-                                                                    Editor was triggered with id <span className="font-bold">{responseId}</span>
-                                                                </p>
-                                                                <CourseEditor courseId={responseId} onSave={(updatedContent) => console.log("Saved:", updatedContent)} />
-                                                            </div>
-                                                        )}
+                                            <div className="prose max-w-full ai-content flex flex-col h-fit max-h-fit">
+                                                {m.content && (
+                                                    <div className={`pt-4 flex flex-col gap-y-1.5 break-normal ${m.role === 'assistant' ? 'pb-4' : ''} ${m.role === 'user' ? 'pb-4' : ''}`}>
+                                                        <MemoizedMarkdown id={m.id} content={m.content} />
                                                     </div>
-                                                );
-                                            }
-                                            return null;
-                                        })}
+                                                )}
 
-                                        {m.toolInvocations?.some(invocation => invocation.state === 'result') && (
-                                            <div className="flex flex-col gap-x-2  max-h-fit border-t border-zinc-200/80 pb-4">
-                                                <button
-                                                    className="expand-tools flex items-center gap-x-2.5 mt-3.5 focus:outline-none"
-                                                    onClick={() => toggleToolExpansion(m.id)}
-                                                    disabled={isStreaming} // Disable button while AI is streaming
-                                                >
-                                                    {/* Show LoadingSpinner while AI is still streaming */}
-                                                    {isStreaming ? (
-                                                        <LoadingSpinner className="w-4 h-4" />
-                                                    ) : expandedTools[m.id] ? (
-                                                        <ChevronUpIcon className="h-3.5 w-3.5 stroke-2 transition-transform duration-300" />
-                                                    ) : (
-                                                        <ChevronDownIcon className="h-3.5 w-3.5 stroke-2 transition-transform duration-300" />
-                                                    )}
-                                                    <h5 className="text-sm tracking-tight font-bold">Function calls</h5>
-                                                </button>
+                                                {m.parts.map((part, partIndex) => {
+                                                    if (part.type === 'tool-invocation' && part.toolInvocation.toolName === 'saveCourseToBlob') {
+                                                        const action = part.toolInvocation.args?.action; // Extract action from input
+                                                        const isEditorAction = ["save", "get", "edit", "result"].includes(action); // Check if it's an editor-triggering action
+                                                        const responseId = part.toolInvocation.state === 'result' ? part.toolInvocation.result?.id : undefined; // Extract id from response
 
-                                                {/* Render ToolOutput only if expanded */}
-                                                {expandedTools[m.id] && (
-                                                    <div className="transition-opacity duration-300 opacity-100 pt-1.5 flex flex-col divide-y divide-zinc-200">
-                                                        {m.toolInvocations.map((invocation, index) =>
-                                                            invocation.state === 'result' ? (
-                                                                <ToolOutput key={index} toolName={invocation.toolName} result={invocation.result} id={m.id} />
-                                                            ) : null
+                                                        return (
+                                                            <div key={`part-${m.id}-${partIndex}`} className="">
+
+
+                                                                {isEditorAction && responseId && (
+                                                                    <div className="pb-5">
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                setSelectedResponseId(selectedResponseId === responseId ? null : responseId);
+                                                                                setOpenLiveCourseId(selectedResponseId === responseId ? null : responseId);
+                                                                                setIsEditorActive(selectedResponseId === responseId);
+                                                                            }}
+                                                                            className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-zinc-900 ring-1 shadow-xs ring-zinc-300 ring-inset hover:bg-zinc-50"
+                                                                        >
+                                                                            {selectedResponseId === responseId ? 'Close viewer' : 'View course'}
+                                                                        </button>
+
+
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    }
+                                                    return null;
+                                                })}
+
+                                                {m.toolInvocations?.some(invocation => invocation.state === 'result') && (
+                                                    <div className="flex flex-col gap-x-2  max-h-fit border-t border-zinc-200/80 pb-4">
+                                                        <button
+                                                            className="expand-tools flex items-center gap-x-2.5 mt-3.5 focus:outline-none"
+                                                            onClick={() => toggleToolExpansion(m.id)}
+                                                            disabled={isStreaming} // Disable button while AI is streaming
+                                                        >
+                                                            {/* Show LoadingSpinner while AI is still streaming */}
+                                                            {isStreaming ? (
+                                                                <LoadingSpinner className="w-4 h-4" />
+                                                            ) : expandedTools[m.id] ? (
+                                                                <ChevronUpIcon className="h-3.5 w-3.5 stroke-2 transition-transform duration-300" />
+                                                            ) : (
+                                                                <ChevronDownIcon className="h-3.5 w-3.5 stroke-2 transition-transform duration-300" />
+                                                            )}
+                                                            <h5 className="text-sm tracking-tight font-bold">Function calls</h5>
+                                                        </button>
+
+                                                        {/* Render ToolOutput only if expanded */}
+                                                        {expandedTools[m.id] && (
+                                                            <div className="transition-opacity duration-300 opacity-100 pt-1.5 flex flex-col divide-y divide-zinc-200">
+                                                                {m.toolInvocations.map((invocation, index) =>
+                                                                    invocation.state === 'result' ? (
+                                                                        <ToolOutput key={index} toolName={invocation.toolName} result={invocation.result} id={m.id} />
+                                                                    ) : null
+                                                                )}
+                                                            </div>
                                                         )}
                                                     </div>
                                                 )}
                                             </div>
-                                        )}
-                                    </div>
-                                </motion.div>
-
-                                <AnimatePresence mode="popLayout">
-                                    {m.role === "assistant" && index === messages.length - 1 && status === "streaming" && (
-                                        <motion.div
-                                            key={`loading-${m.id}`}
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: "auto" }}
-                                            exit={{ opacity: 0, height: 0 }}
-                                            transition={{ duration: 0.2, ease: "easeInOut" }}
-                                            className="flex items-center gap-2 py-4"
-                                        >
-                                            <span className="text-md animate-pulse">
-                                                <LoadingSpinner />
-                                            </span>
-                                            <button className="text-xs font-bold uppercase ml-1 text-zinc-600" type="button" onClick={() => stop()}>
-                                                Stop
-                                            </button>
                                         </motion.div>
-                                    )}
+
+                                        <AnimatePresence mode="popLayout">
+                                            {m.role === "assistant" && index === messages.length - 1 && status === "streaming" && (
+                                                <motion.div
+                                                    key={`loading-${m.id}`}
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: "auto" }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                                                    className="flex items-center gap-2 py-4 pl-1.5"
+                                                >
+                                                    <span className="text-md animate-pulse">
+                                                        <LoadingSpinner />
+                                                    </span>
+                                                    <button className="text-xs font-bold uppercase ml-1 text-zinc-600" type="button" onClick={() => stop()}>
+                                                        Stop
+                                                    </button>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </motion.div>
                                 </AnimatePresence>
-                            </motion.div>
-                        </AnimatePresence>
+
+
+                            </div>
+                        ))}
+                        {/* Scroll anchor at the bottom */}
+            <div ref={bottomRef} />
                     </div>
-                ))}
+                    {/* Input + Attach Button */}
+                    <form onSubmit={handleSubmitWithImages} className="sticky bottom-8 w-full max-w-2xl  mx-auto left-0 right-0 py-0 flex items-center gap-2">
+                        <input
+                            className="flex-grow p-4 placeholder-zinc-500 bg-zinc-50 border border-zinc-50 ring ring-zinc-200 outline outline-white rounded-lg shadow-2xl shadow-zinc-400/50"
+                            value={input}
+                            placeholder="Ask something..."
+                            onChange={handleInputChange}
+                        />
+
+                        {/* File Upload Button */}
+                        <label className="cursor-pointer bg-zinc-200 p-2 rounded-lg hidden">
+                            <PaperClipIcon className="h-6 w-6 text-zinc-700" />
+                            <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                        </label>
+                    </form>
+                </div>
+                {selectedResponseId && (
+                    <LiveCourseClient
+                        courseId={selectedResponseId}
+                        isOpen={true}
+                        onClose={handleCloseLiveView}
+                    />
+                )}
             </div>
 
             {/* Display Uploaded Images */}
@@ -304,25 +320,6 @@ const handleOpenEditor = (id: string) => {
                     ))}
                 </div>
             )}
-
-            {/* Scroll anchor at the bottom */}
-            <div ref={bottomRef} />
-
-            {/* Input + Attach Button */}
-            <form onSubmit={handleSubmitWithImages} className="fixed bottom-0 w-full max-w-screen-md mx-auto left-0 right-0 p-3 mb-8 flex items-center gap-2">
-                <input
-                    className="flex-grow p-4 placeholder-zinc-500 bg-zinc-50 border border-zinc-50 ring ring-zinc-200 outline outline-white rounded-lg shadow-2xl shadow-zinc-300"
-                    value={input}
-                    placeholder="Ask something..."
-                    onChange={handleInputChange}
-                />
-
-                {/* File Upload Button */}
-                <label className="cursor-pointer bg-zinc-200 p-2 rounded-lg">
-                    <PaperClipIcon className="h-6 w-6 text-gray-700" />
-                    <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-                </label>
-            </form>
         </div>
     );
 }

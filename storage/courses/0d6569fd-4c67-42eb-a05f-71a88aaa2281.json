@@ -1,0 +1,49 @@
+{
+  "id": "0d6569fd-4c67-42eb-a05f-71a88aaa2281",
+  "title": "Onboarding Remote Tech Employees to Microsoft Teams",
+  "description": [
+    "This course is designed for beginners who need to familiarize themselves with Microsoft Teams.",
+    "It covers essential features and tools necessary for effective communication and collaboration within the platform."
+  ],
+  "chapters": [
+    {
+      "title": "Basic Communication Tools (Chat, Calls)",
+      "sections": [
+        {
+          "title": "Using Chat for Instant Messaging",
+          "content": "How to start a chat, send messages, and use features like reactions and mentions."
+        },
+        {
+          "title": "Making Voice and Video Calls",
+          "content": "Guidance on initiating voice calls, video calls, and conference calls within Microsoft Teams."
+        }
+      ]
+    },
+    {
+      "title": "Collaboration Features (Channels, Files, Meetings)",
+      "sections": [
+        {
+          "title": "Working with Channels",
+          "content": "Explanation of channels, how to create them, join existing ones, and use channel tabs for organization."
+        },
+        {
+          "title": "Managing Files in Microsoft Teams",
+          "content": "Instructions on uploading files, sharing documents, and using the file explorer."
+        }
+      ]
+    },
+    {
+      "title": "Integrating Other Office 365 Services",
+      "sections": [
+        {
+          "title": "Connecting with Outlook",
+          "content": "How to integrate your Outlook calendar and email within Microsoft Teams for seamless communication."
+        },
+        {
+          "title": "Using SharePoint in Teams",
+          "content": "Details on how to use SharePoint sites directly from the Teams interface."
+        }
+      ]
+    }
+  ]
+}

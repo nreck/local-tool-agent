@@ -18,12 +18,16 @@
 
   /* Use Tailwind classes with @apply */
 
-  .ai-content>.py-4>ul {
-    @apply flex flex-col gap-y-1.5 py-3;
+  .ai-content ul {
+    @apply flex flex-col gap-y-1.5;
   }
 
-  .ai-content .py-4>ul>li {
-    @apply flex rounded-lg border border-zinc-300/60 p-1.5 text-xs;
+  .ai-content ul {
+    @apply flex flex-col gap-y-1.5 py-1.5 ;
+  }
+
+  .ai-content ul>li {
+    @apply flex flex-col min-w-full  bg-white rounded-lg border border-zinc-300/60 py-2 px-2 text-sm;
   }
 
   .ai-content>ul>li>strong {
@@ -40,6 +44,10 @@
 
   .ai-content img {
     @apply rounded !m-0 bg-zinc-200;
+  }
+
+  .ai-content li > code,   .ai-content p > code {
+    @apply rounded-md px-1 bg-zinc-200 font-semibold ;
   }
 
   :root {

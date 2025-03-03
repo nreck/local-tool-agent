@@ -34,15 +34,15 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
             {/* Expand/Collapse Button */}
             <button
                 onClick={() => setIsExpanded((prev) => !prev)}
-                className="flex items-center gap-x-1.5 font-medium text-sm focus:outline-none"
+                className="flex items-center gap-x-1.5 font-semibold text-sm focus:outline-none"
             >
                 {isExpanded ? (
                     <ChevronUpIcon className="h-3.5 w-3.5 stroke-2 transition-transform duration-300" />
                 ) : (
                     <ChevronDownIcon className="h-3.5 w-3.5 stroke-2 transition-transform duration-300" />
                 )}
-                <span className="pl-1.5">Tool:</span>
-                <span className="text-zinc-800 font-semibold">{toolName}</span>
+                <span className="pl-1.5"></span>
+                <span className="text-zinc-600 font-semibold text-xs font-mono">{toolName}</span>
             </button>
 
             {/* Function Call Details (Expandable) */}
@@ -115,20 +115,22 @@ export default function ToolOutput({ toolName, result, id }: ToolOutputProps) {
                             return (
                                 <div
                                     key={key}
-                                    className="border border-zinc-200 p-2 rounded-md max-w-xl bg-gradient-to-br from-zinc-50 via-zinc-400/10 to-white"
+                                    className="border border-zinc-200 py-1.5 px-2 rounded-md max-w-xl bg-zinc-200/40"
                                 >
-                                    <span className="pb-1 font-semibold text-xs text-zinc-900">{key}:</span>
+                                    <span className="font-semibold text-xs text-zinc-900 capitalize">{key}:</span>
                                     <button
                                         onClick={() => setShowFullJson((prev) => !prev)}
-                                        className="text-xs font-medium text-sky-600 my-1 ml-1"
+                                        className="text-xs font-medium text-sky-600  ml-1"
                                     >
                                         {showFullJson ? "Hide" : "JSON"}
                                     </button>
 
                                     {showFullJson && (
-                                        <SyntaxHighlighter language="json" style={vscDarkPlus} wrapLongLines>
+                                       <div className="pt-1.5">
+                                         <SyntaxHighlighter language="json" style={vscDarkPlus} wrapLongLines>
                                             {jsonString}
                                         </SyntaxHighlighter>
+                                        </div>
                                     )}
                                 </div>
                             );
