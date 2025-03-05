@@ -33,6 +33,10 @@ export interface Course {
     id: string;
     title: string;
     description?: string[];
+    goal?: string;
+    audience?: string;
+    topics?: string[] | string;
+  
     chapters: { title: string; sections: { content: string }[] }[];
     content?: object;
 }

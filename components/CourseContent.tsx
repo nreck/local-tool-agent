@@ -1,26 +1,53 @@
+// @/components/CourseContent.tsx
 interface CourseData {
   title: string;
-  description?: string[] | string; // Make description optional and handle both string and array
-  chapters: {
+  description?: string[] | string;
+  goal?: string;
+  audience?: string;
+  topics?: string[] | string;
+  chapters?: {
     title: string;
     sections: {
       title: string;
       content: string;
     }[];
   }[];
+  courseOutline?: {
+    title: string;
+    description?: string[] | string;
+    goal?: string;
+    audience?: string;
+    topics?: string[] | string;
+    chapters: {
+      title: string;
+      sections: {
+        title: string;
+        content: string;
+      }[];
+    }[];
+  };
 }
 
 export default function CourseContent({ data }: { data: CourseData }) {
-  // Handle cases where description might be a string, array, or missing
-  const descriptions = Array.isArray(data.description) 
-    ? data.description 
-    : typeof data.description === 'string' 
-      ? [data.description] 
-      : [];
+  // Get title from either root or courseOutline
+  const title = data.courseOutline?.title || data.title;
+  
+  // Handle cases where description might be in different places or formats
+  const descriptions = (() => {
+    const desc = data.courseOutline?.description || data.description;
+    return Array.isArray(desc) 
+      ? desc 
+      : typeof desc === 'string' 
+        ? [desc] 
+        : [];
+  })();
+
+  // Handle chapters that might be at root level or nested in courseOutline
+  const chapters = data.chapters || data.courseOutline?.chapters || [];
 
   return (
     <div className="space-y-4 p-1.5 pr-8">
-      <h1 className="text-xl font-bold">{data.title}</h1>
+      <h1 className="text-xl font-bold">{title}</h1>
       
       {descriptions.length > 0 && (
         <div className="space-y-2">
@@ -31,7 +58,7 @@ export default function CourseContent({ data }: { data: CourseData }) {
       )}
 
       <div className="space-y-6">
-        {data.chapters.map((chapter, i) => (
+        {chapters.map((chapter, i) => (
           <div key={i} className="space-y-3">
             <h2 className="text-md font-bold">{chapter.title}</h2>
             <div className="space-y-3 pl-1.5">

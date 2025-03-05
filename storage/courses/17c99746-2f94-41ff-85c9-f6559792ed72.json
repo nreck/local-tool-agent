@@ -1,0 +1,66 @@
+{
+  "id": "17c99746-2f94-41ff-85c9-f6559792ed72",
+  "title": "Microsoft Teams for Remote Tech Employees",
+  "courseOutline": {
+    "title": "Microsoft Teams for Remote Tech Employees",
+    "description": [
+      "This course is designed to help remote tech employees feel comfortable and confident using Microsoft Teams for daily communication, collaboration, and productivity.",
+      "It will cover the basics of Microsoft Teams as well as more advanced features such as chat, meetings, and file management."
+    ],
+    "chapters": [
+      {
+        "title": "Introduction to Microsoft Teams",
+        "sections": [
+          {
+            "title": "Overview of Microsoft Teams",
+            "content": "An introduction to what Microsoft Teams is and how it can be used for communication and collaboration in a remote work environment."
+          },
+          {
+            "title": "Getting Started with Microsoft Teams",
+            "content": "A step-by-step guide on setting up an account, joining teams, and accessing channels."
+          }
+        ]
+      },
+      {
+        "title": "Chat Features",
+        "sections": [
+          {
+            "title": "Basic Chat Functions",
+            "content": "How to send messages, use emojis, and format text in chat conversations."
+          },
+          {
+            "title": "Advanced Chat Options",
+            "content": "Exploring features like @mentions, pinned messages, and private chats."
+          }
+        ]
+      },
+      {
+        "title": "Meetings with Microsoft Teams",
+        "sections": [
+          {
+            "title": "Meeting Features",
+            "content": "An overview of features like screen sharing, recording, and live captions."
+          }
+        ]
+      },
+      {
+        "title": "File Management in Microsoft Teams",
+        "sections": [
+          {
+            "title": "Working with Shared Files",
+            "content": "Exploring options for editing, commenting on, and versioning shared files."
+          }
+        ]
+      },
+      {
+        "title": "Conclusion",
+        "sections": [
+          {
+            "title": "Next Steps",
+            "content": "Suggestions for further learning and resources to continue improving Microsoft Teams skills."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "813131f2-03ea-48a6-bfb2-02da216fd841",
+  "title": "Microsoft Teams for Tech Employees",
+  "courseOutline": {
+    "title": "Microsoft Teams for Tech Employees",
+    "description": [
+      "A comprehensive guide to help remote tech employees feel comfortable and confident using Microsoft Teams.",
+      "This course covers essential topics such as setting up your profile, navigating the interface, scheduling meetings, and utilizing collaboration tools."
+    ],
+    "chapters": [
+      {
+        "title": "Introduction to Microsoft Teams",
+        "sections": [
+          {
+            "title": "Overview of Microsoft Teams",
+            "content": "An introduction to Microsoft Teams, its features, and how it can enhance daily communication and productivity for tech employees."
+          }
+        ]
+      },
+      {
+        "title": "Setting Up Your Profile and Personalization",
+        "sections": [
+          {
+            "title": "Creating a User Profile",
+            "content": "Step-by-step instructions on creating and personalizing your user profile in Microsoft Teams."
+          }
+        ]
+      },
+      {
+        "title": "Navigating the Interface: Channels & Chat",
+        "sections": [
+          {
+            "title": "Understanding Channels",
+            "content": "Exploring how to create, manage, and use channels for organizing conversations and tasks."
+          },
+          {
+            "title": "Using Chat Effectively",
+            "content": "Guidance on using chat features for quick communication with team members."
+          }
+        ]
+      },
+      {
+        "title": "Scheduling and Managing Meetings",
+        "sections": [
+          {
+            "title": "Setting Up a Meeting",
+            "content": "Instructions on scheduling meetings, inviting participants, and managing meeting settings in Microsoft Teams."
+          },
+          {
+            "title": "Best Practices for Virtual Meetings",
+            "content": "Tips and best practices for conducting effective virtual meetings using Microsoft Teams."
+          }
+        ]
+      },
+      {
+        "title": "Collaboration Tools: Files and Documents",
+        "sections": [
+          {
+            "title": "Document Collaboration Features",
+            "content": "Exploring features that enable real-time collaboration on documents among team members."
+          }
+        ]
+      }
+    ]
+  }
+}
