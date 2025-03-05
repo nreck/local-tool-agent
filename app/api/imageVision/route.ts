@@ -1,12 +1,5 @@
 // @/app/api/imageVision/route.ts
-import { generateObject } from 'ai';
-import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { z } from 'zod';
-
-const openai2 = createOpenAICompatible({
-    name: 'lmstudio',
-    baseURL: 'http://89.150.153.77:1234/v1',
-});
 
 export async function POST(req: Request) {
     try {
@@ -16,49 +9,50 @@ export async function POST(req: Request) {
         const body = await req.json();
         console.log("Received payload:", JSON.stringify(body, null, 2));
 
-        const { imageUrl, prompt } = body;
+        const { fileUrl } = body;
 
-        if (!imageUrl) {
-            console.error("Error: Missing imageUrl");
+        if (!fileUrl) {
+            console.error("Error: Missing fileUrl");
             return new Response(JSON.stringify({ error: "Image URL is required" }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' },
             });
         }
 
-        console.log("Calling generateObject with:");
-        console.log("Model: llava-v1.5-7b");
-        console.log("Image URL:", imageUrl);
-        console.log("Prompt:", prompt || "No additional instructions provided");
+        console.log("File URL:", fileUrl);
 
-        // Structured image analysis request
-        const response = await generateObject({
-            model: openai2('llava-v1.5-7b'),
-            system: `You are a visual descriptor assistant that describes images and extracts information from them. Your output MUST be valid JSON and follow the given schema.`,
-            prompt: `Analyze the following image:\n\n${imageUrl}\n\nAdditional instructions: ${prompt || "Provide a detailed description."}`,
-            temperature: 0.2,
-            schema: z.object({
-                imageVision: z.array(z.object({
-                    description: z.string().describe('Detailed description of the image'),
-                    objects: z.array(z.string()).describe('List of main objects detected in the image'),
-                    text: z.string().describe('Text detected in the image'),
-                    scene: z.string().describe('Overall scene description'),
-                    attributes: z.object({
-                        colors: z.array(z.string()).describe('Dominant colors in the image'),
-                        lighting: z.string().describe('Lighting conditions'),
-                        composition: z.string().describe('Image composition description')
-                    }).describe('Visual attributes of the image'),
-                })),
-            }),
+        // Fetch the image from the provided URL
+        const imageResponse = await fetch(fileUrl);
+        if (!imageResponse.ok) {
+            throw new Error(`Failed to fetch image from URL: ${imageResponse.statusText}`);
+        }
+        
+        // Get image as blob
+        const imageBlob = await imageResponse.blob();
+        
+        // Create FormData and append the image
+        const formData = new FormData();
+        formData.append('file', imageBlob, 'image.jpg');
+        
+        // Send the image to the vision API
+        const visionApiResponse = await fetch('http://89.150.153.77:3005/process_pdf/', {
+            method: 'POST',
+            body: formData,
         });
+        
+        if (!visionApiResponse.ok) {
+            throw new Error(`Vision API error: ${visionApiResponse.statusText}`);
+        }
+        
+        const response = await visionApiResponse.json();
 
-        // Log the full response from the AI
-        console.log("AI Response:", JSON.stringify(response, null, 2));
+        // Log the full response from the API
+        console.log("API response:", JSON.stringify(response, null, 2));
 
         return Response.json(response);
 
     } catch (error: any) {
-        console.error("Error in image analysis:", error);
+        console.error("Error in analysis:", error);
 
         // Log additional error details if available
         if (error.response) {
@@ -71,7 +65,7 @@ export async function POST(req: Request) {
             console.error("Usage Info:", JSON.stringify(error.usage, null, 2));
         }
 
-        return new Response(JSON.stringify({ error: "Failed to analyze image", details: error.message || error }), {
+        return new Response(JSON.stringify({ error: "Failed to analyze", details: error.message || error }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
         });
