@@ -9,7 +9,8 @@ interface CourseData {
     title: string;
     sections: {
       title: string;
-      content: string;
+      description?: string;
+      content?: string[] | string;        
     }[];
   }[];
   courseOutline?: {
@@ -22,7 +23,8 @@ interface CourseData {
       title: string;
       sections: {
         title: string;
-        content: string;
+        description?: string;
+        content?: string[] | string;
       }[];
     }[];
   };

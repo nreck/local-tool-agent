@@ -1,0 +1,62 @@
+{
+  "id": "4352290e-8996-43d7-8aa9-8d2d7b644dec",
+  "title": "Microsoft Teams for Remote Tech Employees",
+  "courseOutline": {
+    "title": "Microsoft Teams for Remote Tech Employees",
+    "description": "This course is designed to help remote tech employees become proficient in using Microsoft Teams for daily communication, collaboration, and productivity.",
+    "goal": "Help remote tech employees feel comfortable and confident using Microsoft Teams for daily communication, collaboration, and productivity.",
+    "audience": "Beginners",
+    "topics": [
+      "Basics: Understanding the basic interface",
+      "Chat: Mastering text-based communication",
+      "Meetings: Conducting audio/video calls",
+      "Files: Managing and sharing documents"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction to Microsoft Teams",
+        "sections": [
+          {
+            "title": "Overview of Microsoft Teams",
+            "description": "An introduction to what Microsoft Teams is, its purpose, and how it fits into the Microsoft 365 ecosystem."
+          },
+          {
+            "title": "Navigating the Interface",
+            "description": "Learn about the basic layout and navigation elements of Microsoft Teams."
+          }
+        ]
+      },
+      {
+        "title": "Chat Basics",
+        "sections": [
+          {
+            "title": "Starting a Chat",
+            "description": "How to initiate and manage one-on-one or group chats within Microsoft Teams."
+          },
+          {
+            "title": "Using Emojis and Reactions",
+            "description": "Enhance your chat experience with emojis, reactions, and other formatting options."
+          }
+        ]
+      },
+      {
+        "title": "Advanced Meetings Features",
+        "sections": [
+          {
+            "title": "Scheduling a Meeting",
+            "description": "Learn how to schedule meetings from within Microsoft Teams including setting up recurring meetings."
+          }
+        ]
+      },
+      {
+        "title": "Files Management",
+        "sections": [
+          {
+            "title": "Uploading and Sharing Files",
+            "description": "How to upload, share, and manage files within Microsoft Teams."
+          }
+        ]
+      }
+    ]
+  }
+}

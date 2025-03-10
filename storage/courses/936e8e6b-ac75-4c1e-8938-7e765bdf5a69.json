@@ -1,0 +1,83 @@
+{
+  "id": "936e8e6b-ac75-4c1e-8938-7e765bdf5a69",
+  "title": "Microsoft Teams Onboarding for Remote Tech Employees",
+  "description": [
+    "This course is designed to onboard remote tech employees onto Microsoft Teams, focusing on daily communication, collaboration, and productivity."
+  ],
+  "goal": "Onboard remote tech employees to Microsoft Teams for daily communication, collaboration, and productivity.",
+  "audience": "Beginners",
+  "topics": [
+    "Teams Basics",
+    "Chat Features",
+    "Channel Management",
+    "File Sharing",
+    "Meetings Setup"
+  ],
+  "chapters": [
+    {
+      "title": "Introduction to Microsoft Teams",
+      "sections": [
+        {
+          "title": "Overview of Microsoft Teams",
+          "content": "An introduction to what Microsoft Teams is and its importance for remote teams."
+        },
+        {
+          "title": "Setting Up Your Profile",
+          "content": "Guidance on how to personalize your profile in Teams."
+        }
+      ]
+    },
+    {
+      "title": "Chat Features",
+      "sections": [
+        {
+          "title": "One-on-One Chats",
+          "content": "Instructions on initiating private conversations within Teams."
+        },
+        {
+          "title": "Group Chats",
+          "content": "Details on creating and managing group chats for team discussions."
+        }
+      ]
+    },
+    {
+      "title": "Channel Management",
+      "sections": [
+        {
+          "title": "Creating Channels",
+          "content": "Steps to create new channels for specific projects or teams."
+        },
+        {
+          "title": "Managing Channel Settings",
+          "content": "How to customize channel settings for better organization."
+        }
+      ]
+    },
+    {
+      "title": "File Sharing and Collaboration",
+      "sections": [
+        {
+          "title": "Uploading Files",
+          "content": "Guidance on how to upload files into Teams for easy access by team members."
+        },
+        {
+          "title": "Collaborating on Documents",
+          "content": "Instructions on real-time collaboration features within Teams."
+        }
+      ]
+    },
+    {
+      "title": "Meetings Setup and Management",
+      "sections": [
+        {
+          "title": "Scheduling Meetings",
+          "content": "Steps to schedule meetings with your team using Microsoft Teams."
+        },
+        {
+          "title": "Conducting Effective Meetings",
+          "content": "Tips for running productive meetings, including screen sharing and recording options."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "id": "e3b3fb91-e7c6-44d3-8765-2032ff1fd126",
+  "title": "Microsoft Teams Onboarding for Remote Tech Employees",
+  "description": [
+    "Learn how to effectively use Microsoft Teams for daily communication, collaboration, and productivity as a remote tech employee."
+  ],
+  "goal": "Onboard remote tech employees to Microsoft Teams for daily communication, collaboration, and productivity.",
+  "audience": "Beginners",
+  "topics": [
+    "Setup",
+    "Chat",
+    "Meetings",
+    "Files",
+    "Apps"
+  ],
+  "chapters": [
+    {
+      "title": "Introduction to Microsoft Teams",
+      "sections": [
+        {
+          "title": "Overview of Microsoft Teams",
+          "content": "Introduce the features and benefits of using Microsoft Teams for remote work."
+        },
+        {
+          "title": "Why Use Microsoft Teams?",
+          "content": "Discuss how Microsoft Teams can enhance communication, collaboration, and productivity in a remote setting."
+        }
+      ]
+    },
+    {
+      "title": "Setup",
+      "sections": [
+        {
+          "title": "Getting Started with Setup",
+          "content": "Guide on how to set up Microsoft Teams for the first time."
+        },
+        {
+          "title": "Customizing Your Profile",
+          "content": "Instructions on customizing your profile picture and bio in Microsoft Teams."
+        }
+      ]
+    },
+    {
+      "title": "Chat",
+      "sections": [
+        {
+          "title": "Basics of Chatting",
+          "content": "Explain how to send messages, create groups, and manage conversations."
+        },
+        {
+          "title": "Advanced Chat Features",
+          "content": "Explore advanced features like file sharing, emojis, and reactions in chats."
+        }
+      ]
+    },
+    {
+      "title": "Meetings",
+      "sections": [
+        {
+          "title": "Scheduling Meetings",
+          "content": "Instructions on how to schedule meetings within Microsoft Teams."
+        },
+        {
+          "title": "Joining and Participating in Meetings",
+          "content": "Guide on joining meetings, using video/audio settings, and sharing screens."
+        }
+      ]
+    },
+    {
+      "title": "Files",
+      "sections": [
+        {
+          "title": "Storing and Sharing Files",
+          "content": "Explain how to store files in Teams and share them with colleagues."
+        },
+        {
+          "title": "Collaborating on Documents",
+          "content": "Instructions on real-time collaboration using Microsoft Office apps within Teams."
+        }
+      ]
+    },
+    {
+      "title": "Apps",
+      "sections": [
+        {
+          "title": "Integrating Third-Party Apps",
+          "content": "Guide on how to integrate and use third-party apps in Microsoft Teams for enhanced functionality."
+        }
+      ]
+    }
+  ]
+}

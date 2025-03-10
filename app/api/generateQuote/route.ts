@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         console.log("generateQuote received:", { quote, author, source });
 
         const response = await generateObject({
-            model: openai2('qwen2.5-14b-instruct'),
+            model: openai2('qwen2.5-14b-instruct@q8_0'),
             system: `You are a quote formatter. Your output MUST be valid JSON and follow the given schema..`,
             prompt: `Quote: "${quote}". Author: "${author}". Source: "${source}".`,
             temperature: 0.5,

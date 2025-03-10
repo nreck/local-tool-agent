@@ -1,0 +1,62 @@
+{
+  "id": "574fd2df-661d-4e2e-b78f-1a57c3568fe3",
+  "title": "Microsoft Teams for Remote Tech Employees",
+  "goal": "Help remote tech employees feel comfortable and confident using Microsoft Teams for daily communication, collaboration, and productivity.",
+  "audience": "Remote Tech Employees",
+  "topics": [
+    "Basics",
+    "Meetings",
+    "Chat",
+    "Files"
+  ],
+  "chapters": [
+    {
+      "title": "Introduction to Microsoft Teams",
+      "sections": [
+        {
+          "title": "Overview of Microsoft Teams",
+          "description": "An introduction to the features and benefits of Microsoft Teams for remote tech employees."
+        },
+        {
+          "title": "Navigating the Interface",
+          "description": "Learn how to navigate through different sections of Microsoft Teams interface."
+        }
+      ]
+    },
+    {
+      "title": "Daily Communication with Chat",
+      "sections": [
+        {
+          "title": "Using Chat for Instant Messaging",
+          "description": "How to use chat for instant messaging and group conversations."
+        },
+        {
+          "title": "Customizing Chat Settings",
+          "description": "Adjusting settings such as notifications, themes, and privacy options in chat."
+        }
+      ]
+    },
+    {
+      "title": "Collaboration with Meetings",
+      "sections": [
+        {
+          "title": "Scheduling and Joining Meetings",
+          "description": "Steps to schedule meetings and join them from the calendar or directly through Microsoft Teams."
+        },
+        {
+          "title": "Using Meeting Features",
+          "description": "Exploring features like screen sharing, recording, and virtual backgrounds in meetings."
+        }
+      ]
+    },
+    {
+      "title": "Productivity with Files",
+      "sections": [
+        {
+          "title": "Working with Channels and Tabs",
+          "description": "Using OneNote and other productivity tools integrated into Microsoft Teams."
+        }
+      ]
+    }
+  ]
+}

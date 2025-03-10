@@ -1,0 +1,70 @@
+{
+  "id": "ed14c7b5-17bd-4427-85f5-68fc9a65cc3e",
+  "title": "Microsoft Teams for Remote Tech Employees",
+  "courseOutline": {
+    "title": "Microsoft Teams for Remote Tech Employees",
+    "description": "This course is designed to provide remote tech employees with a comprehensive understanding of Microsoft Teams, enabling them to communicate effectively and collaborate efficiently.",
+    "goal": "Help remote tech employees feel comfortable and confident using Microsoft Teams for daily communication, collaboration, and productivity.",
+    "audience": "Remote Tech Employees",
+    "topics": [
+      "Basics",
+      "Meetings",
+      "Collaboration",
+      "Integration"
+    ],
+    "chapters": [
+      {
+        "title": "Getting Started with Microsoft Teams",
+        "sections": [
+          {
+            "title": "Introduction to Microsoft Teams",
+            "description": "Overview of the platform and its features"
+          },
+          {
+            "title": "Setting Up Your Account",
+            "description": "Guidance on account creation and initial setup"
+          }
+        ]
+      },
+      {
+        "title": "Navigating Meetings in Microsoft Teams",
+        "sections": [
+          {
+            "title": "Scheduling and Joining Meetings",
+            "description": "How to schedule meetings, join them, and manage participants"
+          },
+          {
+            "title": "Using Meeting Features",
+            "description": "Exploration of features like chat, screen sharing, and recording"
+          }
+        ]
+      },
+      {
+        "title": "Collaboration Tools in Microsoft Teams",
+        "sections": [
+          {
+            "title": "Working with Channels and Teams",
+            "description": "Overview of how to organize workspaces and channels"
+          },
+          {
+            "title": "Using Chat for Communication",
+            "description": "Best practices for using chat effectively"
+          }
+        ]
+      },
+      {
+        "title": "Integrating Microsoft Teams into Your Workflow",
+        "sections": [
+          {
+            "title": "Connecting with Other Office 365 Apps",
+            "description": "How to integrate Teams with other applications like Outlook and SharePoint"
+          },
+          {
+            "title": "Customizing and Extending Functionality",
+            "description": "Exploring add-ins and custom integrations"
+          }
+        ]
+      }
+    ]
+  }
+}
