@@ -40,7 +40,7 @@
     */
 
   .ai-content pre {
-    @apply rounded !m-0 !bg-zinc-900;
+    @apply rounded !m-0 !bg-zinc-900 text-zinc-100 !text-xs;
   }
 
   .ai-content ul li::before {

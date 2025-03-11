@@ -40,6 +40,7 @@ export async function POST(req: Request) {
       **Important Rules:**
       - You must NEVER directly suggest topics from your own knowledge—ALWAYS use the designated topic-generation tool after conducting research.
       – Do not use strong or bold for titles, use headings instead. 
+      – Do not continue to the next step before you have recieved the response and acceptance of the previous step.
       ---
       
       ## 📚 E-learning Course Creation Workflow
@@ -63,12 +64,16 @@ export async function POST(req: Request) {
         - Audience (default: "Beginners")
       
       ### Step 3: **Course Outline Generation**
-      - Generate a detailed course outline using the course-outline-generation tool, always including:
+      - Generate a detailed course outline using the generateOutline tool, always including:
         - Goal (user-defined or default)
         - Audience (user-defined or default "Beginners")
-        - At least 3 clear and structured topics (use ["Introduction", "Fundamentals", "Advanced Concepts"] if no topics are available)
+        - At least 3 clear and structured topics
+      – The generated outline JSON acts as a base for the course.
+
+      ### Step 4: **Course content generation**
+      - Extend the course base chapter sections with a new "content" array field, where you create the comprehensive content for each section.
       
-      ### Step 4: **Save Course**
+      ### Step 5: **Save Course**
       - Save the completed course using the storage tool.
       - Do not display course content directly after saving—users will view it themselves.
       
@@ -233,35 +238,58 @@ export async function POST(req: Request) {
                     }
                 },
             }),
+
             generateCourseOutline: tool({
-                description: 'Generate a course outline based on user input. Returns a JSON object containing the course structure.',
+                description: 'Generate a course outline based on planning and research. The generated outline acts as a base for the course. Returns a JSON object containing the course structure.',
                 parameters: z.object({
-                    goal: z.string().default("Learn the fundamentals of AI").describe('The goal of the course'),
-                    audience: z.string().default("Beginners").describe('The audience of the course'),
-                    topics: z.array(z.string()).default(["Introduction to AI", "Machine Learning Basics", "Deep Learning Concepts"]).describe('The topics to cover'),
+                    courseOutline: z.object({
+                        title: z.string().describe('The title of the course'),
+                        description: z.string().describe('The description of the course'),
+                        goal: z.string().describe('The goal of the course'),
+                        audience: z.string().describe('The audience of the course'),
+                        topics: z.array(z.string().describe('Topic'),).describe('The topics of the course'),
+                        chapters: z.array(z.object({
+                            title: z.string().describe('The title of the chapter'),
+                            sections: z.array(z.object({
+                                title: z.string().describe('The title of the section'),
+                                description: z.string().describe('The description of what the section should contain'),
+                            })).describe('The sections of the chapter'),
+                        })).describe('The chapters of the course'),
+                    }),
                 }),
-
-                execute: async ({ goal, audience, topics }) => {
-                    try {
-                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/generateCourseOutline`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ goal, audience, topics }),
-                            cache: 'no-store',
-                        });
-
-                        // ✅ Read response as JSON instead of text
-                        const data = await response.json();
-
-                        console.log("generateCourseOutline API response:", data);
-
-                        return data; // ✅ Return structured JSON directly to the chat agent
-                    } catch (error) {
-                        console.error("Error executing generateCourseOutline tool:", error);
-                        return { error: "An error occurred while generating the course outline." };
-                    }
+                execute: async ({ courseOutline }) => {
+                    return {
+                        courseOutline,
+                    };
                 },
             }),
+
+            generateCourseContent: tool({
+                description: 'Generate course content for course chapters -> sections.',
+                parameters: z.object({
+                        id : z.string().describe('The unique course ID as provided by the generateCourseOutline tool when the base was generated.'),
+                        chapters: z.array(
+                            z.object({
+                                title: z.string().describe('The title of the chapter (unchanged)'),
+                                sections: z.array(
+                                    z.object({
+                                        title: z.string().describe('The title of the section (unchanged)'),
+                                        description: z.string().describe('The description of what the section should contain (unchanged)'),
+                                        content: z.array(z.string().describe('Generated content for this section')),
+                                    })
+                                ).describe('The sections of the chapter (unchanged, except for content)'),
+                            })
+                        ).describe('The chapters of the course (unchanged)'),
+                    }),
+            
+                execute: async ({ chapters }) => {
+                    return {
+                        chapters,
+                    };
+                },
+            }),
+            
+
             imageVision: tool({
                 description: 'Analyze the contents of an image or PDF. Provide the URL to process.',
                 parameters: z.object({
@@ -313,14 +341,13 @@ export async function POST(req: Request) {
                 },
             }),
 
-
             saveCourseToBlob: tool({
                 description: "Save, retrieve, edit, or list all courses in JSON blob storage",
                 parameters: z.object({
                     action: z.enum(["save", "get", "edit", "list"]).describe("Action to perform: save, get, edit, or list all courses"),
                     title: z.string().optional().describe("Course title (needed for 'save', not 'list' or 'get')"),
                     id: z.string().optional().describe("Unique course ID (needed for 'get' and 'edit')"),
-                    content: z.record(z.string(), z.any()).optional().describe("Course content (for save)"),
+                    content: z.record(z.string(), z.any()).optional().describe("The full course content based on the generated outline as a base. (for save)"),
                     key: z.string().optional().describe("Key to edit (for edit action)"),
                     value: z.any().optional().describe("New value (for edit action)"),
                     

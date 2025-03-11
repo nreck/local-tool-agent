@@ -1,0 +1,91 @@
+{
+  "id": "75f7bfbc-17c6-4a73-a37d-39e1de31a666",
+  "title": "Microsoft Teams Onboarding for Remote Tech Employees",
+  "description": "A practical and easy-to-follow guide to help new remote tech employees feel comfortable and confident using Microsoft Teams for daily communication, collaboration, and productivity.",
+  "goal": "Enable new remote tech employees to effectively use Microsoft Teams for daily tasks by providing a comprehensive yet straightforward onboarding experience.",
+  "audience": "Tech professionals new to Microsoft Teams, comfortable with computers and looking for an easy-to-follow guide on using the platform.",
+  "topics": [
+    "Basics",
+    "Meetings",
+    "Chat",
+    "Files"
+  ],
+  "chapters": [
+    {
+      "title": "Introduction to Microsoft Teams",
+      "sections": [
+        {
+          "title": "Overview of Microsoft Teams",
+          "description": "An introduction to the core features and benefits of Microsoft Teams.",
+          "content": [
+            "Microsoft Teams is a unified communication and collaboration platform that integrates chat, meetings, file storage, and application integration. Key features include instant messaging, video conferencing, document management, and app integrations such as Office 365 applications."
+          ]
+        },
+        {
+          "title": "Setting Up Your Profile",
+          "description": "Guidance on creating a personal profile within Microsoft Teams.",
+          "content": [
+            "Log in to your Microsoft account and navigate to the 'Profile' settings. Add a professional photo, update your display name, and fill out your bio section. Ensure all contact information is accurate for easy communication with team members."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Collaboration Tools: Meetings",
+      "sections": [
+        {
+          "title": "Scheduling Meetings",
+          "description": "How to schedule and manage meetings using the calendar feature in Microsoft Teams.",
+          "content": [
+            "Open the Calendar tab within Microsoft Teams. Click on 'New Meeting' to create a new meeting request. Enter details such as title, date, time, location (if applicable), and attendees. Set reminders for yourself and other participants."
+          ]
+        },
+        {
+          "title": "Joining Meetings",
+          "description": "Instructions on joining scheduled meetings, including video conferencing basics.",
+          "content": [
+            "Click the meeting link or open Microsoft Teams and go to your calendar. Locate the upcoming meeting and click 'Join.' Adjust audio settings for optimal sound quality and ensure your camera is working properly."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Instant Messaging: Chat",
+      "sections": [
+        {
+          "title": "Navigating Chats",
+          "description": "Understanding how to use chat features for daily communication within Microsoft Teams.",
+          "content": [
+            "Access the chat feature by clicking on the 'Chat' tab in the left navigation pane. Start a new conversation or join an existing one with team members. Use emojis, stickers, and file attachments to enhance your messages."
+          ]
+        },
+        {
+          "title": "Group Chats and Channels",
+          "description": "Exploring group chats and channels for team collaboration.",
+          "content": [
+            "Create a new chat by clicking the '+' icon in the 'Chat' tab. Add multiple participants to form a group chat. Join or create channels within teams for specific projects or topics."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Document Management: Files",
+      "sections": [
+        {
+          "title": "Uploading and Sharing Files",
+          "description": "Guidance on uploading, sharing, and managing files within Microsoft Teams.",
+          "content": [
+            "Click the 'Files' tab in the left navigation pane to access your file storage. Upload documents by dragging them into the folder or clicking 'Upload.' Share files with team members by right-clicking a document and selecting 'Share.'"
+          ]
+        },
+        {
+          "title": "Collaborative Editing",
+          "description": "How to work collaboratively on documents in real-time using Microsoft Teams.",
+          "content": [
+            "Open a shared document from within a channel or chat. Click the 'Collaborate' button to start editing together with other team members. Use commenting and version history features for effective collaboration."
+          ]
+        }
+      ]
+    }
+  ]
+}
