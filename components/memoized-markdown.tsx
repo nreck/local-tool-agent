@@ -44,7 +44,7 @@ const MemoizedMarkdownBlock = memo(
                         }
 
                         // Otherwise, return a normal image
-                        return <img src={src} alt={alt} className="flex max-w-fit h-auto" />;
+                        return <img src={src} alt={alt} className="flex w-fit max-w-full h-auto" />;
                     },
 
 

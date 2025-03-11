@@ -70,10 +70,13 @@ export async function POST(req: Request) {
         - At least 3 clear and structured topics
       – The generated outline JSON acts as a base for the course.
 
-      ### Step 4: **Course content generation**
+      ### Step 4: **Course image generation**
+      - Generate an image based on the course using the generateImage tool.
+
+      ### Step 5: **Course content generation**
       - Extend the course base chapter sections with a new "content" array field, where you create the comprehensive content for each section.
       
-      ### Step 5: **Save Course**
+      ### Step 6: **Save Course**
       - Save the completed course using the storage tool.
       - Do not display course content directly after saving—users will view it themselves.
       
@@ -334,6 +337,33 @@ export async function POST(req: Request) {
                         const data = await response.json();
                         console.log("generateQuote API response:", data);
                         return data;
+                    } catch (error) {
+                        console.error("Error executing generateQuote tool:", error);
+                        return { error: "An error occurred while generating the quote." };
+                    }
+                },
+            }),
+
+            generateImage: tool({
+                description: 'Generate a realistic photo based on a prompt. Make sure it is described in detail and avoid illutrations, diagrams, text or similar. Returns an image URL.',
+                parameters: z.object({
+                    prompt: z.string().describe('Describe the image to generate'),
+                }),
+
+                execute: async ({ prompt }) => {
+                    try {
+                        const response = await fetch(`http://89.150.153.77:5000/generate?format=base64`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ prompt }),
+                            cache: 'no-store',
+                        });
+
+                        const data = await response.json();
+                        console.log("generateQuote API response:", data);
+                        const imageUrl = data.image_url;
+
+                        return imageUrl;
                     } catch (error) {
                         console.error("Error executing generateQuote tool:", error);
                         return { error: "An error occurred while generating the quote." };
