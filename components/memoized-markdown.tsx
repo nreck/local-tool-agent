@@ -12,9 +12,9 @@ const MemoizedMarkdownBlock = memo(
                     h2: ({ children }) => <h2 className="text-lg font-semibold mb-3 mt-3.5">{children}</h2>,
                     h3: ({ children }) => <h3 className="text-xl tracking-tight font-bold mb-1.5 mt-3.5">{children}</h3>,
                     h4: ({ children }) => <h4 className="text-md font-bold mb-1 mt-3.5">{children}</h4>,
-                    ol: ({ children }) => <ol className="flex flex-col max-h-fit text-md w-full">{children}</ol>,
-                    ul: ({ children }) => <ul className="flex flex-col gap-y-1.5 max-h-fit text-md w-full">{children}</ul>,
-                    li: ({ children }) => <li className="inline-table max-h-fit py-1">{children}</li>,
+                    ol: ({ children }) => <ol className="flex relative flex-col gap-y-1.5 py- list-disc list-inside ml-5">{children}</ol>,
+                    ul: ({ children }) => <ul className="flex relative flex-col gap-y-1.5 py- list-disc list-inside ml-5">{children}</ul>,
+                    li: ({ children }) => <li className="py-0 flex flex-col max-h-fit gap-y-1.5">{children}</li>,
                     strong: ({ children }) => <strong className="font-semibold ">{children}</strong>,
                     a: ({ children, href }) => <a href={href} className="text-sky-500 font-medium max-w-fit">{children}</a>,
                     blockquote: ({ children }) => (

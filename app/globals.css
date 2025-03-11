@@ -17,7 +17,7 @@
   }
 
   /* Use Tailwind classes with @apply */
-
+/*
   .ai-content ul {
     @apply flex flex-col gap-y-1.5;
   }
@@ -37,9 +37,22 @@
   ul>li {
     @apply inline-block max-w-fit;
   }
+    */
 
   .ai-content pre {
     @apply rounded !m-0 !bg-zinc-900;
+  }
+
+  .ai-content ul li::before {
+    @apply content-["•"] text-lg absolute -ml-4;
+  }
+
+  .ai-content ol li::before {
+    @apply content-["•"] text-lg absolute -ml-4;
+  }
+
+  .ai-content li strong {
+    @apply contents;
   }
 
   .ai-content img {

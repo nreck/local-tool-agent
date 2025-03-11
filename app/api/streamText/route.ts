@@ -59,7 +59,7 @@ export async function POST(req: Request) {
     }, null, 2));
 
     const result = streamText({
-        model: openai2('qwen2.5-14b-instruct@q8_0'),
+        model: openai2('qwen2.5-14b-instruct'),
         system: `You are a helpful English-speaking assistant named Jarvis. You may call tools if needed to answer the user question.`,
         prompt: query,
         temperature: 0.5,

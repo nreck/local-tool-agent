@@ -1,0 +1,70 @@
+{
+  "id": "e1b338cc-2a7c-4d5f-9dc9-fe6ad81eb1b4",
+  "title": "ChatGPT Security for Engineers",
+  "courseOutline": {
+    "title": "ChatGPT Security for Engineers",
+    "description": "This course is designed to provide code engineers with a comprehensive understanding of ChatGPT's capabilities and limitations in the context of security.",
+    "goal": "Enable code engineers to make informed decisions about using ChatGPT by understanding its capabilities and limitations in the context of security.",
+    "audience": "Code engineers with basic IT skills but no specific background in cybersecurity",
+    "topics": [
+      "Security Basics",
+      "ChatGPT Engine",
+      "Data Privacy",
+      "Ethical Guidelines"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction to Security",
+        "sections": [
+          {
+            "title": "What is Cybersecurity?",
+            "description": "An overview of the field of cybersecurity and its importance."
+          },
+          {
+            "title": "Key Concepts in Security",
+            "description": "Explanation of basic security concepts such as authentication, authorization, encryption, etc."
+          }
+        ]
+      },
+      {
+        "title": "Understanding ChatGPT",
+        "sections": [
+          {
+            "title": "Architecture Overview",
+            "description": "A deep dive into the architecture of ChatGPT and how it functions."
+          },
+          {
+            "title": "Security Features and Limitations",
+            "description": "Discussion on built-in security features and potential limitations of ChatGPT in a secure environment."
+          }
+        ]
+      },
+      {
+        "title": "Data Privacy Considerations",
+        "sections": [
+          {
+            "title": "Handling Sensitive Information",
+            "description": "Strategies for handling sensitive data with ChatGPT to ensure privacy."
+          },
+          {
+            "title": "Compliance and Regulations",
+            "description": "Overview of relevant regulations such as GDPR, CCPA, etc. that apply when using ChatGPT."
+          }
+        ]
+      },
+      {
+        "title": "Ethical Guidelines in AI",
+        "sections": [
+          {
+            "title": "Responsible Use of ChatGPT",
+            "description": "Guidelines for ethical use of ChatGPT including considerations around bias and fairness."
+          },
+          {
+            "title": "Case Studies",
+            "description": "Real-world examples illustrating the importance of adhering to ethical guidelines when using AI technologies like ChatGPT."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -181,7 +181,7 @@ export default function Chat() {
 
                                             <div className="prose max-w-full ai-content flex flex-col h-fit max-h-fit">
                                                 {m.content && (
-                                                    <div className={`pt-4 flex flex-col gap-y-1.5 break-normal ${m.role === 'assistant' ? 'pb-4' : ''} ${m.role === 'user' ? 'pb-4' : ''}`}>
+                                                    <div className={`pt-4 flex flex-col gap-y-2 break-normal ${m.role === 'assistant' ? 'pb-4' : ''} ${m.role === 'user' ? 'pb-4' : ''}`}>
                                                         <MemoizedMarkdown id={m.id} content={m.content} />
                                                     </div>
                                                 )}

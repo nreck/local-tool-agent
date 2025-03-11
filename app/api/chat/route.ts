@@ -39,14 +39,22 @@ export async function POST(req: Request) {
       
       **Important Rules:**
       - You must NEVER directly suggest topics from your own knowledge—ALWAYS use the designated topic-generation tool after conducting research.
-      
+      – Do not use strong or bold for titles, use headings instead. 
       ---
       
       ## 📚 E-learning Course Creation Workflow
       Always follow this structured process precisely:
-      
+
+      ### Step 0: **Planning**
+      – Collect the specific goal and audience from the user in order to plan the creation of a course using the planCourse tool. Always require the user to provide the goal and audience and help them improve their input if necessary by providing suggestions, to ensure a highly relevant goal and audience in order to create a high quality course that covers the specific needs.
+      - Create highly relevant learning objectives based on the goal to ensure the course covers the full scope of the topic.
+      – The learning objectives shouldn't be required by the user, but should be generated based on the goal and audience.
+      - If adding additional learning objectives, ensure they are relevant to the goal, audience and the existing learning objectives. Always provide the user with the full list of learning objectives including any new suggestions.
+      – Make sure the user is satisfied with the goal and audience before proceeding to the research step. *🚩 CRITICAL*
+
       ### Step 1: **Research**
-      - Conduct online research using the search tool to gather detailed, relevant information on the requested course topic.
+      - Conduct online research using the search tool to gather detailed, relevant information based on the course plans "webSearchQueries" which includes search strings related to both the goal and audience.
+      – Make sure you search all goalResearchQueries audienceResearchQueries by calling the search tool with all the queries.
       
       ### Step 2: **Topic Generation**
       - Generate relevant course topics using the dedicated topic-generation tool, based on:
@@ -69,11 +77,8 @@ export async function POST(req: Request) {
       Always strictly follow these guidelines to ensure consistency, accuracy, and clarity for users.`
       });
       
-
-
-
     const result = streamText({
-        model: openai2('qwen2.5-14b-instruct@q8_0'),
+        model: openai2('qwen2.5-14b-instruct'),
         messages,
         experimental_continueSteps: true,
         temperature: 0.3,
@@ -108,6 +113,71 @@ export async function POST(req: Request) {
                     };
                 },
             }),
+            planCourse: tool({
+                description: 'Generates a comprehensive and detailed course plan by explicitly expanding the goal and audience, including generating effective web search queries to enhance understanding. Confirm satisfaction with user before proceeding.',
+                parameters: z.object({
+                  goal: z.object({
+                    originalGoal: z.string().describe(
+                      'The exact course goal provided by the user without modifications.'
+                    ),
+                    optimizedGoal: z.string().optional().describe(
+                      'A refined and more precise restatement of the original goal if improvement is needed.'
+                    ),
+                    rationale: z.string().describe(
+                      'A brief and clear justification explaining why this goal is important to the specified audience. Generate this yourself.'
+                    ),
+                    learningObjectives: z.array(z.string()).describe(
+                      'Clearly defined learning objectives generated from the goal and audience.'
+                    ),
+                    outcome: z.array(z.string()).describe(
+                      'Explicit descriptions of skills or competencies learners will have after completing the course. Generate these yourself.'
+                    ),
+                    scope: z.object({
+                      included: z.array(z.string()).describe(
+                        'Topics explicitly included in the course coverage. Generate these yourself.'
+                      ),
+                      excluded: z.array(z.string()).describe(
+                        'Topics explicitly excluded from the course coverage. Generate these yourself.'
+                      ),
+                    }).describe(
+                      'Clarifies course coverage boundaries explicitly.'
+                    ),
+                  }),
+                  audience: z.object({
+                    originalAudience: z.string().describe(
+                      'The exact audience provided by the user without modifications.'
+                    ),
+                    optimizedAudience: z.string().optional().describe(
+                      'An improved, clearer audience description if refinement is beneficial.'
+                    ),
+                    audienceDetails: z.array(z.string()).describe(
+                      'Explicit characteristics or prerequisites of the audience. Generate these yourself.'
+                    ),
+                    audienceNeeds: z.array(z.string()).describe(
+                      'Learning needs, motivations, or goals of the audience. Generate these yourself.'
+                    ),
+                  }),
+                  webSearchQueries: z.object({
+                    goalResearchQueries: z.array(z.string()).describe(
+                      'Explicitly generated search queries intended to gather comprehensive and updated information about the course goal. Generate these queries yourself, ensuring broad coverage and depth.'
+                    ),
+                    audienceResearchQueries: z.array(z.string()).describe(
+                      'Explicitly generated search queries intended to deeply understand the audience, including their typical characteristics, learning needs, and common challenges. Generate these yourself, ensuring thoroughness.'
+                    ),
+                  }).describe(
+                    'Clearly defined web search queries to gather extensive and updated insights about both the course goal and audience.'
+                  ),
+                }),
+                execute: async ({ goal, audience, webSearchQueries }) => {
+                  return {
+                    goal,
+                    audience,
+                    webSearchQueries,
+                  };
+                },
+              }),
+              
+              
             tvlySearch: tool({
                 description: 'Use Tavily to search the internet. Provide a query for best results. Do not output the tool call directly but use it in your final user-facing answer. Do not output topic related search results directly, but use them to output relevant topics with the generateTopics tool. Do not use this tool for searching GIFs.',
                 parameters: z.object({
@@ -189,35 +259,6 @@ export async function POST(req: Request) {
                     } catch (error) {
                         console.error("Error executing generateCourseOutline tool:", error);
                         return { error: "An error occurred while generating the course outline." };
-                    }
-                },
-            }),
-            generateCourseContent: tool({
-                description: 'Generate the course content based on a outline created by the generateCourseOutline tool. Returns a JSON object containing the course structure.',
-                parameters: z.object({
-                    courseOutline: z.object({}).describe('The outline generated by the generateCourseOutline tool'),
-                }),
-
-                execute: async ({ courseOutline }) => {
-                    console.log("generateCourseContent received courseOutline:", courseOutline);
-
-                    try {
-                        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/generateCourseContent`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ courseOutline }),
-                            cache: 'no-store',
-                        });
-
-                        // ✅ Read response as JSON instead of text
-                        const data = await response.json();
-
-                        console.log("generateCourseContent API response:", data);
-
-                        return data; // ✅ Return structured JSON directly to the chat agent
-                    } catch (error) {
-                        console.error("Error executing generateCourseContent tool:", error);
-                        return { error: "An error occurred while generating the course content based on the outline." };
                     }
                 },
             }),
