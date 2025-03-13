@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { MemoizedMarkdown } from '@/components/memoized-markdown';
 import ToolOutput from '@/components/ToolOutput';
@@ -7,23 +7,101 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import { ChevronDownIcon, ChevronUpIcon, PaperClipIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import StartScreen from '@/components/StartScreen';
 import { motion, AnimatePresence } from 'framer-motion';
-import LiveCourseClient from '@/app/live-course/[courseId]/LiveCourseClient'; // Adjust the import path as necessary
+import LiveCourseClient from '@/app/live-course/[courseId]/LiveCourseClient';
+
+// Define TypeScript interfaces for component props
+interface ConnectionStatusIndicatorProps {
+  connectionStatus: 'connected' | 'disconnected' | 'reconnecting';
+  isStreaming: boolean;
+  reconnectAttempts: number;
+  maxReconnectAttempts: number;
+  handleRetry: () => void;
+}
+
+// Extract these components outside of the main component to avoid re-creation on each render
+const ConnectionStatusIndicator: React.FC<ConnectionStatusIndicatorProps> = ({ 
+  connectionStatus, 
+  isStreaming, 
+  reconnectAttempts, 
+  maxReconnectAttempts,
+  handleRetry 
+}) => {
+    if (connectionStatus === 'connected' || !isStreaming) return null;
+    
+    return (
+        <div className={`fixed bottom-4 right-4 p-3 rounded-lg shadow-lg ${
+            connectionStatus === 'disconnected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+        }`}>
+            {connectionStatus === 'disconnected' ? (
+                <div className="flex items-center gap-2">
+                    <span>Connection lost</span>
+                    <button 
+                        className="px-2 py-1 bg-red-200 rounded hover:bg-red-300"
+                        onClick={handleRetry}
+                    >
+                        Retry
+                    </button>
+                </div>
+            ) : (
+                <div className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4 text-yellow-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Reconnecting... Attempt {reconnectAttempts + 1}/{maxReconnectAttempts}</span>
+                </div>
+            )}
+        </div>
+    );
+};
+
+interface ServerErrorDisplayProps {
+  serverError: string | null;
+  handleRetry: () => void;
+}
+
+// Extract ServerErrorDisplay component
+const ServerErrorDisplay: React.FC<ServerErrorDisplayProps> = ({ serverError, handleRetry }) => {
+    if (!serverError) return null;
+    
+    return (
+        <div className="fixed bottom-20 right-4 p-4 rounded-lg shadow-lg bg-red-100 text-red-800">
+            <div className="flex flex-col gap-2">
+                <p>{serverError}</p>
+                <button 
+                    className="px-3 py-1 bg-red-200 rounded hover:bg-red-300 text-sm font-semibold"
+                    onClick={handleRetry}
+                >
+                    Retry
+                </button>
+            </div>
+        </div>
+    );
+};
 
 export default function Chat() {
-    const { messages, input, handleInputChange, handleSubmit, append, status, stop } = useChat();
-    console.log("full response:", JSON.stringify(messages, null, 2));
-
+    const { messages, input, handleInputChange, handleSubmit, append, status, stop, error } = useChat();
+    
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
-    const [uploadedImages, setUploadedImages] = useState<string[]>([]); // Store image URLs
-    const [triggeredCourseId, setTriggeredCourseId] = useState<string | null>(null); // State to manage triggered courseId
+    const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+    const [triggeredCourseId, setTriggeredCourseId] = useState<string | null>(null);
     const [openLiveCourseId, setOpenLiveCourseId] = useState<string | null>(null);
     const [isEditorActive, setIsEditorActive] = useState<boolean>(false);
 
     const [expandedTools, setExpandedTools] = useState<Record<string, boolean>>({});
-    const [isStreaming, setIsStreaming] = useState(false); // Track if AI is currently streaming
-    const [showStartScreen, setShowStartScreen] = useState(true); // Track if StartScreen should be visible
+    const [isStreaming, setIsStreaming] = useState(false);
+    const [showStartScreen, setShowStartScreen] = useState(true);
     const [selectedResponseId, setSelectedResponseId] = useState<string | null>(null);
+    
+    // Add new state for connection status tracking
+    const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'reconnecting'>('connected');
+    const [reconnectAttempts, setReconnectAttempts] = useState(0);
+    const maxReconnectAttempts = 3;
+    const reconnectTimer = useRef<NodeJS.Timeout | null>(null);
+
+    // Add a state to track server errors
+    const [serverError, setServerError] = useState<string | null>(null);
 
     // Hide StartScreen when a message is sent
     useEffect(() => {
@@ -31,6 +109,73 @@ export default function Chat() {
             setShowStartScreen(false);
         }
     }, [messages]);
+
+    // Handle errors from useChat - separate from the status effect
+    useEffect(() => {
+        if (error) {
+            console.error("Chat error:", error);
+            setServerError("The server encountered an error. This may be due to a connection issue or a problem with a tool call.");
+            setConnectionStatus('disconnected');
+        }
+    }, [error]);
+
+    // Create a memoized retry function
+    const handleRetry = useCallback(() => {
+        setConnectionStatus('reconnecting');
+        setReconnectAttempts(0);
+        setServerError(null);
+        
+        const lastMessage = messages[messages.length - 1];
+        if (lastMessage && lastMessage.role === 'assistant') {
+            append({
+                role: 'system',
+                content: 'The connection was interrupted. Please continue from where you left off.'
+            // @ts-ignore
+            }, { resume: true });
+        }
+    }, [messages, append]);
+
+    // Track status changes in a separate effect
+    useEffect(() => {
+        if (status === 'streaming') {
+            setIsStreaming(true);
+            setConnectionStatus('connected');
+        } else if (status === 'error') {
+            setIsStreaming(false);
+            setConnectionStatus('disconnected');
+        } else if (status === 'ready') {
+            setIsStreaming(false);
+            setReconnectAttempts(0);
+            setConnectionStatus('connected');
+        }
+    }, [status]);
+
+    // Handle reconnection attempts in a separate effect
+    useEffect(() => {
+        // Only run this effect when in disconnected state and attempts are below max
+        if (connectionStatus === 'disconnected' && reconnectAttempts < maxReconnectAttempts) {
+            setConnectionStatus('reconnecting');
+            
+            // Clear any existing timer
+            if (reconnectTimer.current) {
+                clearTimeout(reconnectTimer.current);
+                reconnectTimer.current = null;
+            }
+            
+            // Set new timer for retry
+            reconnectTimer.current = setTimeout(() => {
+                setReconnectAttempts(prev => prev + 1);
+                handleRetry();
+            }, 2000);
+        }
+        
+        return () => {
+            if (reconnectTimer.current) {
+                clearTimeout(reconnectTimer.current);
+                reconnectTimer.current = null;
+            }
+        };
+    }, [connectionStatus, reconnectAttempts, maxReconnectAttempts, handleRetry]);
 
     // Function to handle predefined prompt clicks and submit immediately
     const handlePredefinedPrompt = async (prompt: string) => {
@@ -71,7 +216,6 @@ export default function Chat() {
         }
     };
 
-
     const handleSubmitWithImages = async (event?: { preventDefault?: () => void }) => {
         if (event?.preventDefault) event.preventDefault(); // Prevent default form submission
 
@@ -106,8 +250,6 @@ export default function Chat() {
     const removeImage = (imageUrl: string) => {
         setUploadedImages((prev) => prev.filter((img) => img !== imageUrl));
     };
-
-
 
     const toggleToolExpansion = (messageId: string) => {
         setExpandedTools(prev => ({
@@ -302,6 +444,16 @@ export default function Chat() {
                     ))}
                 </div>
             )}
+            {/* Add the ServerErrorDisplay */}
+            <ServerErrorDisplay serverError={serverError} handleRetry={handleRetry} />
+            {/* Add ConnectionStatusIndicator component */}
+            <ConnectionStatusIndicator 
+                connectionStatus={connectionStatus}
+                isStreaming={isStreaming}
+                reconnectAttempts={reconnectAttempts}
+                maxReconnectAttempts={maxReconnectAttempts}
+                handleRetry={handleRetry}
+            />
         </div>
     );
 }

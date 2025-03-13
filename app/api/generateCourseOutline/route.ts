@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         console.log("generateCourseOutline received:", { goal, audience, topics });
 
         const response = await generateObject({
-            model: openai2('qwq-32b'),
+            model: openai2('qwen2.5-14b-instruct@q8_0'),
             system: `You are an english course outline generator. Your output MUST be valid JSON and follow the given schema. DO NOT provide explanations, introductions, markdown formatting, or any extra text—only return the JSON object.`,
             prompt: `Create a course outline for a course with the goal of "${goal}". Topics: ${topics.join(", ")}. Audience: ${audience}.`,
             temperature: 0.4,

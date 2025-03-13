@@ -1,0 +1,120 @@
+{
+  "id": "51564358-794c-47c3-9d84-d017bc99060e",
+  "title": "Microsoft Teams Onboarding for Remote Tech Professionals",
+  "description": "A 3-day microlearning course focusing on essential Microsoft Teams features tailored to developers and IT staff. Combines hands-on exercises with technical troubleshooting scenarios.",
+  "goal": "Enable remote technical staff to independently use core Microsoft Teams features (chat, channels, meetings, files) within 3 workdays through microlearning modules",
+  "audience": "Technical professionals (developers, IT staff) working remotely full-time",
+  "topics": [
+    "Chat Configuration & Troubleshooting",
+    "Channel Management Best Practices",
+    "Meetings: Advanced Controls & Integration",
+    "File Storage Permissions & Collaboration"
+  ],
+  "chapters": [
+    {
+      "title": "Module 1: Teams Interface Fundamentals",
+      "sections": [
+        {
+          "title": "Navigating the Dashboard",
+          "description": "Identify key elements (activity feed, chat list, apps tab) and customize the interface for productivity"
+        },
+        {
+          "title": "Basic Chat Operations",
+          "description": "Create direct chats vs. group chats; use @mentions and reaction buttons effectively"
+        },
+        {
+          "title": "Quick Start Guide to Channels",
+          "description": "Differentiate between public/private channels; join existing teams and access pinned resources"
+        },
+        {
+          "title": "First Day Exercise: Setup Profile & Preferences",
+          "description": "Configure status messages, notification settings, and accessibility features relevant for remote work"
+        }
+      ]
+    },
+    {
+      "title": "Module 2: Chat Configuration & Troubleshooting",
+      "sections": [
+        {
+          "title": "Advanced Chat Settings",
+          "description": "Manage read receipts, message retention policies, and integration with Trello/Slack bots"
+        },
+        {
+          "title": "Common Chat Issues Resolution",
+          "description": "Diagnose delivery failures, recover deleted messages, and block spam accounts"
+        },
+        {
+          "title": "Collaborative Documentation via Chat",
+          "description": "Use @mention syntax to tag code snippets; share files directly from chat threads"
+        },
+        {
+          "title": "Scenario-Based Exercise: Resolve a Simulated Chat Outage",
+          "description": "Walk through step-by-step troubleshooting with provided error logs"
+        }
+      ]
+    },
+    {
+      "title": "Module 3: Channel Management Best Practices",
+      "sections": [
+        {
+          "title": "Organizing Workflows Through Channels",
+          "description": "Create sub-channels for project phases; use pinned messages for critical documentation"
+        },
+        {
+          "title": "Permissions & Security Settings",
+          "description": "Configure member roles (owner, member, guest) and data retention policies for sensitive projects"
+        },
+        {
+          "title": "Channel Tab Customization",
+          "description": "Add Power BI dashboards, SharePoint libraries, and OneNote notebooks directly into channels"
+        },
+        {
+          "title": "Case Study: Replicating a Real-World DevOps Channel Structure",
+          "description": "Build a sample channel mimicking common CI/CD communication patterns"
+        }
+      ]
+    },
+    {
+      "title": "Module 4: Meetings Mastery for Technical Teams",
+      "sections": [
+        {
+          "title": "Optimizing Meeting Settings",
+          "description": "Configure breakout rooms, recording storage locations, and guest access permissions"
+        },
+        {
+          "title": "Advanced Screen Sharing Techniques",
+          "description": "Share specific applications vs. full desktop; use annotation tools during code reviews"
+        },
+        {
+          "title": "Integrating with Productivity Tools",
+          "description": "Embed meeting recordings into SharePoint sites; schedule recurring meetings via Power Automate"
+        },
+        {
+          "title": "Technical Exercise: Simulate a Daily Standup Meeting",
+          "description": "Practice using the 'raise hand' feature, Q&A session integration, and post-meeting action item tracking"
+        }
+      ]
+    },
+    {
+      "title": "Module 5: Secure File Collaboration",
+      "sections": [
+        {
+          "title": "Working with SharePoint Integration",
+          "description": "Upload files to team libraries; apply version control and check-out features"
+        },
+        {
+          "title": "Permissions Granularity",
+          "description": "Set unique permissions for folders vs. individual files within a shared library"
+        },
+        {
+          "title": "Conflict Resolution in Co-Editing",
+          "description": "Understand real-time co-authoring limitations and implement change tracking workflows"
+        },
+        {
+          "title": "Final Project: Create Secure Documentation Repository",
+          "description": "Design a file structure for a hypothetical project with appropriate access controls"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "id": "10150ff8-77bc-41dc-a59c-c1ce85b381bc",
+  "title": "Microsoft Teams Onboarding for Remote Tech Professionals",
+  "description": "A structured, step-by-step course to help technical employees master essential Microsoft Teams features for seamless communication and collaboration without information overload.",
+  "goal": "Master essential Microsoft Teams features for seamless remote work communication and task management",
+  "audience": "Technical professionals new to Microsoft Teams but familiar with workplace tools like Slack, Zoom, or Google Workspace",
+  "chapters": [
+    {
+      "title": "Chapter 1: Getting Started with Teams",
+      "sections": [
+        {
+          "title": "Interface Overview",
+          "description": "Navigate key components like chat, channels, and apps compared to similar platforms",
+          "content": [
+            "Key Components:",
+            "- **Chat**: Similar to Slack’s direct messages; use for quick, private conversations.",
+            "- **Channels**: Organized discussion spaces (e.g., #general or project-specific channels).",
+            "- **Apps**: Built-in tools like SharePoint, Power Automate, and external integrations."
+          ]
+        },
+        {
+          "title": "Transition from Slack/Zoom/Google Workspace",
+          "description": "Map familiar features to Microsoft Teams equivalents for smoother adoption",
+          "content": [
+            "Feature Mapping:",
+            "- **Slack → Teams**: @channel = @teamname; threads = replies.",
+            "- **Zoom → Teams**: Breakout rooms require a paid license; recordings auto-save to SharePoint."
+          ]
+        },
+        {
+          "title": "Setting Up Profile & Notifications",
+          "description": "Customize personal settings for optimal communication experience",
+          "content": [
+            "Steps:",
+            "1. Upload photo via profile icon > Edit profile.",
+            "2. Add skills (e.g., 'Python, Azure').",
+            "3. Disable @everyone alerts in notifications settings."
+          ]
+        },
+        {
+          "title": "Quick Start Guide for New Users",
+          "description": "Step-by-step first-day setup checklist",
+          "content": [
+            "First-Day Checklist:",
+            "- Join main company team (e.g., Global IT).",
+            "- Explore pinned resources in #general.",
+            "- Set up critical channel notifications."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Chapter 2: Core Communication & Collaboration",
+      "sections": [
+        {
+          "title": "Organizing Work with Channels",
+          "description": "Create teams, channels, and organize discussions effectively",
+          "content": [
+            "Best Practices:",
+            "- Pin important docs at the top of channels.",
+            "- Use @channel sparingly to avoid noise."
+          ]
+        },
+        {
+          "title": "Real-Time File Collaboration",
+          "description": "Share/modify documents in real-time using SharePoint integration",
+          "content": [
+            "Tutorial Steps:",
+            "1. Upload files via Teams > Files tab or drag-and-drop.",
+            "2. Co-edit docs with version history tracked automatically."
+          ]
+        },
+        {
+          "title": "Using Reactions/Mentions for Tracking",
+          "description": "Master @mentions, reactions, and pinned messages to manage conversations",
+          "content": [
+            "Pro Tips:",
+            "- Use 🎉/👍 reactions instead of text replies.",
+            "- Pin urgent updates (e.g., server alerts) with the pushpin icon."
+          ]
+        },
+        {
+          "title": "Securely Sharing Sensitive Information",
+          "description": "Best practices for file sharing permissions and version control",
+          "content": [
+            "Security Measures:",
+            "- Restrict access via Advanced sharing options.",
+            "- Use encrypted 1:1 chats for sensitive data."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Chapter 3: Virtual Meetings & Task Management",
+      "sections": [
+        {
+          "title": "Scheduling & Conducting Meetings",
+          "description": "Use breakout rooms, screen sharing, and recording features effectively",
+          "content": [
+            "Meeting Setup:",
+            "- Schedule via Teams > Calendar.",
+            "- Enable recordings to SharePoint folders."
+          ]
+        },
+        {
+          "title": "Microsoft Planner Basics",
+          "description": "Create tasks, assign deadlines, and track progress visually",
+          "content": [
+            "Workflow Example:",
+            "1. Link Planner boards to Teams channels.",
+            "2. Drag tasks between To Do/In Progress/Done in Board view."
+          ]
+        },
+        {
+          "title": "Integrating with Office 365",
+          "description": "Leverage Word/Excel directly within Teams for seamless workflows",
+          "content": [
+            "Tutorial:",
+            "- Embed docs via Apps > Microsoft Word.",
+            "- Track real-time data updates in Excel spreadsheets."
+          ]
+        },
+        {
+          "title": "Automating Repetitive Tasks",
+          "description": "Set up Power Automate flows and bot interactions to streamline processes",
+          "content": [
+            "Automation Examples:",
+            "- Auto-create Planner tasks when files are uploaded.",
+            "- Use /status daily report via Teams Bot."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Chapter 4: Advanced Settings & Troubleshooting",
+      "sections": [
+        {
+          "title": "Security Configuration Essentials",
+          "description": "Adjust compliance settings for data protection awareness",
+          "content": [
+            "Settings Guide:",
+            "- Enable Sensitivity labels for PII files.",
+            "- Require MFA for sensitive channels."
+          ]
+        },
+        {
+          "title": "Diagnosing Connectivity Issues",
+          "description": "Troubleshoot audio/video problems and network configurations",
+          "content": [
+            "Fixes:",
+            "- Update Teams via Help > About.",
+            "- Use /diagnostics in chat to test latency."
+          ]
+        },
+        {
+          "title": "Customizing Your Workspace",
+          "description": "Advanced interface personalization techniques",
+          "content": [
+            "Tweaks:",
+            "- Switch to Focused mode for reduced clutter.",
+            "- Pin/unpin apps via right-click menu."
+          ]
+        },
+        {
+          "title": "Continuous Learning Resources",
+          "description": "Access official guides, training videos, and support channels",
+          "content": [
+            "Resources List:",
+            "- Microsoft Learn: Teams Fundamentals course.",
+            "- Internal #helpdesk channel for instant support."
+          ]
+        }
+      ]
+    }
+  ]
+}
