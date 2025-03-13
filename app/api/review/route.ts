@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const prompt = `Recipe: ${recipe}. Includes the following ingredients: ${ingredients.join(", ")}.`;
 
     const { text } = await generateText({
-        model: openai2('qwen2.5-14b-instruct-1m@q8_0'),
+        model: openai2('qwq-32b-1m@q8_0'),
         system: "You a a recipe reviwer that reviews recipes based on name and ingredients, in order to ensure the recipe covers the full scope of the ingredients and is easy to follow.",
         prompt: prompt,
     });

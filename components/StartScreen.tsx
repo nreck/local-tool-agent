@@ -18,14 +18,14 @@ const promptTemplates = [
         prompt: "Search the web for eloomi and find the latest information about the company, purpose, stakeholders and products.",
         description: "Search and retrieve information about eloomi."
     },
-   
+   /*
     {
         icon: "🗂️",
         label: "Related topics",
         prompt: "Generate 5 topics about the latest technology trends.",
         description: "Generate topics on technology trends."
     },
-    
+    */
 ];
 
 const StartScreen = ({ onPromptClick }: StartScreenProps) => {
@@ -35,11 +35,11 @@ const StartScreen = ({ onPromptClick }: StartScreenProps) => {
       <h2 className="text-xl font-medium text-zinc-600"><span className="font-semibold text-zinc-900">Learning agent </span><span className="font-light">/</span> Client interface</h2>
       <span className="text-zinc-500 text-sm mt-0.5">Currently running on Qwen-2.5-14B</span>
       </div>
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-2.5 w-full max-w-sm">
         {promptTemplates.map((template, index) => (
           <button 
             key={index}
-            className="p-3.5 px-5 bg-zinc-100 border border-zinc-200 rounded-lg shadow-sm hover:bg-zinc-200"
+            className="p-3.5 px-5 bg-zinc-100 border border-zinc-200 rounded-lg w-full shadow-sm hover:bg-zinc-200"
             onClick={() => onPromptClick(template.prompt)}
           >
             <div className="flex flex-col items-start pr-">
@@ -47,7 +47,7 @@ const StartScreen = ({ onPromptClick }: StartScreenProps) => {
                 {template.icon}
                <div className="flex flex-col items-start justify-start">
                <span className="font-medium  text-zinc-800 text-md ">{template.label}</span>
-               <p className="text-zinc-500 text-sm max-w-[300px] text-left">{template.description}</p>
+               <p className="text-zinc-500 text-sm max-w-[300px] text-left hidden">{template.description}</p>
                </div>
 
               </div>

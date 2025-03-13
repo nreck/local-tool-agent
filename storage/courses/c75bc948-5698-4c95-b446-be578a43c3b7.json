@@ -1,0 +1,67 @@
+{
+  "id": "c75bc948-5698-4c95-b446-be578a43c3b7",
+  "title": "Microsoft Teams Onboarding for Remote Tech Employees",
+  "description": "A practical course designed to help remote tech employees become comfortable and confident in using Microsoft Teams for daily communication, collaboration, and productivity.",
+  "goal": "Develop an accessible onboarding course that equips remote tech employees with essential skills in Microsoft Teams for effective daily communication, collaboration, and productivity without feeling overwhelmed.",
+  "audience": "Tech professionals working remotely who need to use Microsoft Teams daily.",
+  "topics": [
+    "Basics",
+    "Communication",
+    "Collaboration",
+    "Productivity"
+  ],
+  "chapters": [
+    {
+      "title": "Getting Started with Microsoft Teams",
+      "sections": [
+        {
+          "title": "Overview of Microsoft Teams",
+          "description": "An introduction to the platform and its features"
+        },
+        {
+          "title": "Navigating the Interface",
+          "description": "Exploring the layout and basic navigation"
+        }
+      ]
+    },
+    {
+      "title": "Communication Essentials",
+      "sections": [
+        {
+          "title": "Chat Features",
+          "description": "Using chat for quick messages and discussions"
+        },
+        {
+          "title": "Video Calls",
+          "description": "Scheduling, participating in, and managing video calls"
+        }
+      ]
+    },
+    {
+      "title": "Collaborative Workflows",
+      "sections": [
+        {
+          "title": "Creating and Managing Channels",
+          "description": "Setting up channels for different projects or topics"
+        },
+        {
+          "title": "Working on Projects Together",
+          "description": "Using Teams to collaborate effectively with team members"
+        }
+      ]
+    },
+    {
+      "title": "Enhancing Productivity",
+      "sections": [
+        {
+          "title": "File Sharing and Storage",
+          "description": "Uploading, downloading, and managing files within Teams"
+        },
+        {
+          "title": "Utilizing Additional Tools",
+          "description": "Exploring other productivity-enhancing features in Teams"
+        }
+      ]
+    }
+  ]
+}

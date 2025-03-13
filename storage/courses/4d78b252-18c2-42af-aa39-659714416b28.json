@@ -1,0 +1,75 @@
+{
+  "id": "4d78b252-18c2-42af-aa39-659714416b28",
+  "title": "Onboarding Remote Tech Employees to Microsoft Teams",
+  "description": "A practical, easy-to-follow course for onboarding remote tech employees to Microsoft Teams. The goal is to help them feel comfortable and confident using Teams for daily communication, collaboration, and productivity without overwhelming them with too much information at once.",
+  "goal": "Help remote tech employees become proficient in Microsoft Teams for daily tasks such as communication, collaboration, and productivity without feeling overwhelmed.",
+  "audience": "Tech professionals joining a company that uses Microsoft Teams for the first time.",
+  "topics": [
+    "Basics",
+    "Communication",
+    "Collaboration",
+    "Productivity"
+  ],
+  "chapters": [
+    {
+      "title": "Introduction to Microsoft Teams",
+      "sections": [
+        {
+          "title": "Overview of Microsoft Teams",
+          "description": "An introduction to what Microsoft Teams is and its key features.",
+          "content": []
+        },
+        {
+          "title": "Setting Up Your Profile",
+          "description": "How to set up your personal profile in Microsoft Teams.",
+          "content": []
+        }
+      ]
+    },
+    {
+      "title": "Communication Tools",
+      "sections": [
+        {
+          "title": "Chat Basics",
+          "description": "Understanding how to use chat for daily communication.",
+          "content": []
+        },
+        {
+          "title": "Making Calls and Meetings",
+          "description": "Mastering the tools for making calls and scheduling meetings.",
+          "content": []
+        }
+      ]
+    },
+    {
+      "title": "Collaboration Features",
+      "sections": [
+        {
+          "title": "Using Channels",
+          "description": "How to effectively utilize channels for team collaboration.",
+          "content": []
+        },
+        {
+          "title": "Sharing Files and Notes",
+          "description": "Steps to share files, notes, and other resources within Teams.",
+          "content": []
+        }
+      ]
+    },
+    {
+      "title": "Productivity Tools",
+      "sections": [
+        {
+          "title": "Leveraging Apps and Integrations",
+          "description": "How to use apps and integrations for enhanced productivity.",
+          "content": []
+        },
+        {
+          "title": "Using Planner and Calendar",
+          "description": "Steps to utilize planner and calendar features for better organization.",
+          "content": []
+        }
+      ]
+    }
+  ]
+}

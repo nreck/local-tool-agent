@@ -1,0 +1,105 @@
+{
+  "id": "d49565e6-47ee-46a4-ba7f-2207c822ab2f",
+  "title": "Onboarding Remote Tech Employees to Microsoft Teams",
+  "description": "A practical and easy-to-follow course designed to help remote tech employees feel comfortable and confident using Microsoft Teams for daily communication, collaboration, and productivity.",
+  "goal": "Enable remote tech employees to effectively use Microsoft Teams for daily tasks such as communication, file sharing, meetings, and project management.",
+  "audience": "Tech professionals working remotely who need to use Microsoft Teams as part of their daily tasks.",
+  "topics": [
+    "Communication",
+    "File-Sharing",
+    "Meetings",
+    "Project-Management"
+  ],
+  "chapters": [
+    {
+      "title": "Introduction to Microsoft Teams",
+      "sections": [
+        {
+          "title": "Overview of Microsoft Teams",
+          "description": "An introduction to the features and layout of Microsoft Teams.",
+          "content": []
+        },
+        {
+          "title": "Setting Up Personal Profiles",
+          "description": "Guidance on setting up personal profiles and preferences in Teams.",
+          "content": []
+        }
+      ]
+    },
+    {
+      "title": "Communication Tools",
+      "sections": [
+        {
+          "title": "Chat and Messaging Features",
+          "description": "A detailed look at chat and messaging functionalities within Teams.",
+          "content": []
+        },
+        {
+          "title": "Voice and Video Calls",
+          "description": "Exploring voice and video call features for effective communication.",
+          "content": []
+        }
+      ]
+    },
+    {
+      "title": "File-Sharing and Collaboration",
+      "sections": [
+        {
+          "title": "Sharing Files in Teams",
+          "description": "How to share files and collaborate on documents in real-time within Microsoft Teams.",
+          "content": []
+        },
+        {
+          "title": "Using Channels for Organization",
+          "description": "Creating and managing channels for different projects or topics.",
+          "content": []
+        }
+      ]
+    },
+    {
+      "title": "Meetings and Conferencing",
+      "sections": [
+        {
+          "title": "Scheduling Meetings",
+          "description": "How to schedule, attend, and manage virtual meetings in Teams.",
+          "content": []
+        },
+        {
+          "title": "Best Practices for Virtual Meetings",
+          "description": "Guidelines on running effective virtual meetings using Microsoft Teams.",
+          "content": []
+        }
+      ]
+    },
+    {
+      "title": "Project Management with Teams",
+      "sections": [
+        {
+          "title": "Using Teams for Project Coordination",
+          "description": "How to use Teams for project management and task coordination.",
+          "content": []
+        },
+        {
+          "title": "Collaboration Tools for Projects",
+          "description": "Exploring collaboration tools available in Teams for managing projects.",
+          "content": []
+        }
+      ]
+    },
+    {
+      "title": "Advanced Features and Tips",
+      "sections": [
+        {
+          "title": "Customizing Your Workspace",
+          "description": "Tips on customizing your workspace within Microsoft Teams.",
+          "content": []
+        },
+        {
+          "title": "Troubleshooting Common Issues",
+          "description": "Guidance on troubleshooting common issues encountered when using Microsoft Teams.",
+          "content": []
+        }
+      ]
+    }
+  ]
+}

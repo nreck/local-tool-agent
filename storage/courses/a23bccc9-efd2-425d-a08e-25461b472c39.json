@@ -1,0 +1,72 @@
+{
+  "id": "a23bccc9-efd2-425d-a08e-25461b472c39",
+  "title": "Onboarding Remote Tech Employees to Microsoft Teams",
+  "courseOutline": {
+    "title": "Onboarding Remote Tech Employees to Microsoft Teams",
+    "description": "A comprehensive guide for new remote tech employees to effectively use Microsoft Teams for daily communication, collaboration, and productivity.",
+    "goal": "Help remote tech employees feel comfortable and confident using Microsoft Teams for daily communication, collaboration, and productivity.",
+    "audience": "New remote tech employees who are unfamiliar with Microsoft Teams but have basic computer skills.",
+    "topics": [
+      "Basics",
+      "Chat",
+      "Meetings",
+      "Files",
+      "Integrations"
+    ],
+    "chapters": [
+      {
+        "title": "Getting Started with Microsoft Teams",
+        "sections": [
+          {
+            "title": "Introduction to Microsoft Teams",
+            "description": "Overview of the interface and navigation"
+          }
+        ]
+      },
+      {
+        "title": "Effective Communication in Teams",
+        "sections": [
+          {
+            "title": "Using Chat Features",
+            "description": "Mastering messaging within Teams"
+          },
+          {
+            "title": "Best Practices for Messaging",
+            "description": "Guidelines for effective communication"
+          }
+        ]
+      },
+      {
+        "title": "Virtual Meetings with Microsoft Teams",
+        "sections": [
+          {
+            "title": "Scheduling and Participating in Video Calls",
+            "description": "How to schedule meetings and join calls"
+          },
+          {
+            "title": "Screen Sharing and Breakout Rooms",
+            "description": "Enhancing collaboration during virtual gatherings"
+          }
+        ]
+      },
+      {
+        "title": "Document Management in Teams",
+        "sections": [
+          {
+            "title": "Uploading, Storing, and Accessing Files",
+            "description": "Managing documents within the platform"
+          }
+        ]
+      },
+      {
+        "title": "Expanding Your Tools with Integrations",
+        "sections": [
+          {
+            "title": "Integrating Microsoft Teams with Other Applications",
+            "description": "Connecting Teams to other productivity tools"
+          }
+        ]
+      }
+    ]
+  }
+}

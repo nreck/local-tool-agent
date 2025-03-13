@@ -11,7 +11,7 @@ const openai2 = createOpenAICompatible({
 });
 
 // Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+export const maxDuration = 300;
 
 export async function POST(req: Request) {
     const { messages } = await req.json();
@@ -46,37 +46,32 @@ export async function POST(req: Request) {
       ## 📚 E-learning Course Creation Workflow
       Always follow this structured process precisely:
 
-      ### Step 0: **Planning**
+      ### Step 1: **Planning**
       – Collect the specific goal and audience from the user in order to plan the creation of a course using the planCourse tool. Always require the user to provide the goal and audience and help them improve their input if necessary by providing suggestions, to ensure a highly relevant goal and audience in order to create a high quality course that covers the specific needs.
       - Create highly relevant learning objectives based on the goal to ensure the course covers the full scope of the topic.
       – The learning objectives shouldn't be required by the user, but should be generated based on the goal and audience.
       - If adding additional learning objectives, ensure they are relevant to the goal, audience and the existing learning objectives. Always provide the user with the full list of learning objectives including any new suggestions.
       – Make sure the user is satisfied with the goal and audience before proceeding to the research step. *🚩 CRITICAL*
 
-      ### Step 1: **Research**
+      ### Step 2: **Research**
       - Conduct online research using the search tool to gather detailed, relevant information based on the course plans "webSearchQueries" which includes search strings related to both the goal and audience.
       – Make sure you search all goalResearchQueries audienceResearchQueries by calling the search tool with all the queries.
       
-      ### Step 2: **Topic Generation**
+      ### Step 3: **Topic Generation**
       - Generate relevant course topics using the dedicated topic-generation tool, based on:
         - Research results
         - User-defined goal (default: "Learn the fundamentals of AI")
         - Audience (default: "Beginners")
       
-      ### Step 3: **Course Outline Generation**
+      ### Step 4: **Course Outline Generation**
       - Generate a detailed course outline using the generateOutline tool, always including:
         - Goal (user-defined or default)
         - Audience (user-defined or default "Beginners")
         - At least 3 clear and structured topics
       – The generated outline JSON acts as a base for the course.
 
-      ### Step 4: **Course image generation**
-      - Generate an image based on the course using the generateImage tool.
-
-      ### Step 5: **Course content generation**
-      - Extend the course base chapter sections with a new "content" array field, where you create the comprehensive content for each section.
-      
-      ### Step 6: **Save Course**
+     
+      ### Step 5: **Save Course**
       - Save the completed course using the storage tool.
       - Do not display course content directly after saving—users will view it themselves.
       
@@ -86,7 +81,7 @@ export async function POST(req: Request) {
       });
       
     const result = streamText({
-        model: openai2('qwen2.5-14b-instruct'),
+        model: openai2('qwq-32b'),
         messages,
         experimental_continueSteps: true,
         temperature: 0.3,
@@ -256,8 +251,8 @@ export async function POST(req: Request) {
                             sections: z.array(z.object({
                                 title: z.string().describe('The title of the section'),
                                 description: z.string().describe('The description of what the section should contain'),
-                            })).describe('The sections of the chapter'),
-                        })).describe('The chapters of the course'),
+                            })).min(4).describe('The sections of the chapter'),
+                        })).min(4).describe('The chapters of the course'),
                     }),
                 }),
                 execute: async ({ courseOutline }) => {
@@ -267,6 +262,7 @@ export async function POST(req: Request) {
                 },
             }),
 
+            /*
             generateCourseContent: tool({
                 description: 'Generate course content for course chapters -> sections.',
                 parameters: z.object({
@@ -278,7 +274,7 @@ export async function POST(req: Request) {
                                     z.object({
                                         title: z.string().describe('The title of the section (unchanged)'),
                                         description: z.string().describe('The description of what the section should contain (unchanged)'),
-                                        content: z.array(z.string().describe('Generated content for this section')),
+                                        content: z.array(z.string().describe('Generated content for this section').min(8)),
                                     })
                                 ).describe('The sections of the chapter (unchanged, except for content)'),
                             })
@@ -291,7 +287,7 @@ export async function POST(req: Request) {
                     };
                 },
             }),
-            
+            */
 
             imageVision: tool({
                 description: 'Analyze the contents of an image or PDF. Provide the URL to process.',
@@ -360,12 +356,39 @@ export async function POST(req: Request) {
                         });
 
                         const data = await response.json();
-                        console.log("generateQuote API response:", data);
-                        const imageUrl = data.image_url;
+                        const imageUrl = data.url;
+                        console.log("generateImage API image response:", imageUrl);
 
                         return imageUrl;
                     } catch (error) {
-                        console.error("Error executing generateQuote tool:", error);
+                        console.error("Error executing generateImage tool:", error);
+                        return { error: "An error occurred while generating the quote." };
+                    }
+                },
+            }),
+
+            generateVideo: tool({
+                description: 'Generate a realistic video based on a prompt. Make sure it is described in detail and avoid illutrations, diagrams, text or similar. Returns a video in webp format.',
+                parameters: z.object({
+                    prompt: z.string().describe('Describe the video to generate'),
+                }),
+
+                execute: async ({ prompt }) => {
+                    try {
+                        const response = await fetch(`http://89.150.153.77:5000/generate`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ prompt: prompt, model: "video" }),
+                            cache: 'no-store',
+                        });
+
+                        const data = await response.json();
+                        const videoUrl = data;
+                        console.log("generateVideo API image response:", videoUrl);
+
+                        return videoUrl;
+                    } catch (error) {
+                        console.error("Error executing generateVideo tool:", error);
                         return { error: "An error occurred while generating the quote." };
                     }
                 },

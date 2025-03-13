@@ -20,7 +20,6 @@ export default function Chat() {
     const [openLiveCourseId, setOpenLiveCourseId] = useState<string | null>(null);
     const [isEditorActive, setIsEditorActive] = useState<boolean>(false);
 
-    const [autoScroll, setAutoScroll] = useState(true);
     const [expandedTools, setExpandedTools] = useState<Record<string, boolean>>({});
     const [isStreaming, setIsStreaming] = useState(false); // Track if AI is currently streaming
     const [showStartScreen, setShowStartScreen] = useState(true); // Track if StartScreen should be visible
@@ -108,24 +107,7 @@ export default function Chat() {
         setUploadedImages((prev) => prev.filter((img) => img !== imageUrl));
     };
 
-    // Detect user scrolling
-    useEffect(() => {
-        const handleScroll = () => {
-            if (!chatContainerRef.current) return;
-            const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-            setAutoScroll(scrollHeight - scrollTop - clientHeight < 50);
-        };
 
-        chatContainerRef.current?.addEventListener('scroll', handleScroll);
-        return () => chatContainerRef.current?.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    // Auto-scroll when a new message arrives
-    useEffect(() => {
-        if (autoScroll) {
-            bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [messages, autoScroll]);
 
     const toggleToolExpansion = (messageId: string) => {
         setExpandedTools(prev => ({
@@ -277,7 +259,7 @@ export default function Chat() {
                             </div>
                         ))}
                         {/* Scroll anchor at the bottom */}
-            <div ref={bottomRef} />
+            <div  />
                     </div>
                     {/* Input + Attach Button */}
                     <form onSubmit={handleSubmitWithImages} className="sticky bottom-8 w-full max-w-2xl  mx-auto left-0 right-0 py-0 flex items-center gap-2">

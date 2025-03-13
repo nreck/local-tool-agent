@@ -1,0 +1,106 @@
+{
+  "id": "3346b310-ad6d-4b71-8f2c-b8a3fdcf3d8c",
+  "title": "Microsoft Teams Onboarding for Remote Tech Employees",
+  "description": "A practical, easy-to-follow course designed to help remote tech employees feel comfortable and confident using Microsoft Teams for daily communication, collaboration, and productivity.",
+  "goal": "Enable remote tech employees to effectively use Microsoft Teams for daily tasks by providing a practical, easy-to-follow onboarding course that focuses on essential features without overloading them with unnecessary details.",
+  "audience": "Tech professionals working remotely who need to use Microsoft Teams for their daily tasks.",
+  "topics": [
+    "Chat",
+    "Meetings",
+    "Files",
+    "Calls",
+    "Apps"
+  ],
+  "chapters": [
+    {
+      "title": "Introduction to Microsoft Teams",
+      "sections": [
+        {
+          "title": "Overview of Microsoft Teams",
+          "description": "An introduction to the key features and benefits of Microsoft Teams."
+        },
+        {
+          "title": "Setting Up Your Profile",
+          "description": "Guidance on creating and customizing your personal profile within Microsoft Teams."
+        }
+      ],
+      "minItems": 4,
+      "description": "This chapter provides an overview of Microsoft Teams and how to set up a personalized workspace."
+    },
+    {
+      "title": "Communication Basics: Chat",
+      "sections": [
+        {
+          "title": "Navigating the Chat Interface",
+          "description": "Instructions on using the chat interface for one-on-one and group conversations."
+        },
+        {
+          "title": "Sending Messages and Files",
+          "description": "How to send text messages, images, files, and links within chats."
+        }
+      ],
+      "minItems": 4,
+      "description": "This chapter covers essential communication skills using Microsoft Teams' chat feature."
+    },
+    {
+      "title": "Collaboration Tools: Meetings",
+      "sections": [
+        {
+          "title": "Scheduling a Meeting",
+          "description": "Steps to schedule and manage meetings in Microsoft Teams."
+        },
+        {
+          "title": "Joining and Participating in Meetings",
+          "description": "How to join, participate, and collaborate during virtual meetings."
+        }
+      ],
+      "minItems": 4,
+      "description": "This chapter focuses on using the meeting feature for effective collaboration."
+    },
+    {
+      "title": "Document Management: Files",
+      "sections": [
+        {
+          "title": "Uploading and Sharing Documents",
+          "description": "Guidance on uploading, sharing, and managing documents in Microsoft Teams."
+        },
+        {
+          "title": "Working with Shared Folders",
+          "description": "How to organize and collaborate on shared folders within the platform."
+        }
+      ],
+      "minItems": 4,
+      "description": "This chapter explains how to manage files and documents using Microsoft Teams' file management tools."
+    },
+    {
+      "title": "Voice and Video: Calls",
+      "sections": [
+        {
+          "title": "Making Voice and Video Calls",
+          "description": "Instructions on initiating and participating in voice and video calls within Microsoft Teams."
+        },
+        {
+          "title": "Advanced Call Features",
+          "description": "Exploration of advanced call features such as screen sharing, recording, and muting."
+        }
+      ],
+      "minItems": 4,
+      "description": "This chapter covers the use of voice and video calls for communication and collaboration."
+    },
+    {
+      "title": "Enhancing Productivity: Apps",
+      "sections": [
+        {
+          "title": "Integrating with Other Tools",
+          "description": "How to integrate Microsoft Teams with other productivity tools and applications."
+        },
+        {
+          "title": "Using Pre-built and Customized Apps",
+          "description": "Guidance on using pre-built and customized apps within the platform."
+        }
+      ],
+      "minItems": 4,
+      "description": "This chapter explores how to enhance productivity through app integrations in Microsoft Teams."
+    }
+  ]
+}

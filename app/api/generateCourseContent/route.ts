@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         console.log("generateCourseContent received:", { courseOutline });
 
         const response = await generateObject({
-            model: openai2('qwen2.5-14b-instruct'),
+            model: openai2('qwq-32b'),
             system: `You are an english course content generator. Your output MUST be valid JSON and follow the given schema. DO NOT provide explanations, introductions, markdown formatting, or any extra text—only return the JSON object.`,
             prompt: `Generate the content for the course sections based on the outline ${courseOutline}.`,
             temperature: 0.4,

@@ -1,0 +1,63 @@
+{
+  "id": "0ee6d43c-57c5-4637-9956-b2400c44341c",
+  "title": "Onboarding Remote Tech Employees to Microsoft Teams",
+  "description": "A practical, easy-to-follow course for onboarding remote tech employees to Microsoft Teams. The goal is to help them feel comfortable and confident using Teams for daily communication, collaboration, and productivity—without overwhelming them with too much information at once.",
+  "goal": "Generate a practical, easy-to-follow course for onboarding remote tech employees to Microsoft Teams",
+  "audience": "Remote tech employees new to Microsoft Teams",
+  "topics": [
+    "Basics",
+    "Communication",
+    "Collaboration",
+    "Productivity"
+  ],
+  "chapters": [
+    {
+      "title": "Introduction to Microsoft Teams",
+      "sections": [
+        {
+          "title": "Overview of Microsoft Teams",
+          "description": "An introduction to the key features and benefits of using Microsoft Teams for remote tech employees."
+        },
+        {
+          "title": "Setting Up Your Profile",
+          "description": "Step-by-step guide on how to set up your profile in Microsoft Teams."
+        }
+      ]
+    },
+    {
+      "title": "Communication Tools",
+      "sections": [
+        {
+          "title": "Chat Basics",
+          "description": "Learn the basics of sending and receiving messages within Microsoft Teams."
+        },
+        {
+          "title": "Video Calls",
+          "description": "How to conduct video calls and manage audio settings for effective communication."
+        }
+      ]
+    },
+    {
+      "title": "Collaboration Features",
+      "sections": [
+        {
+          "title": "File Sharing",
+          "description": "Understanding how to share files and collaborate in real-time using channels."
+        },
+        {
+          "title": "Meetings",
+          "description": "Scheduling, joining, and managing meetings within Microsoft Teams."
+        }
+      ]
+    },
+    {
+      "title": "Enhancing Productivity",
+      "sections": [
+        {
+          "title": "Using Apps for Workflows",
+          "description": "Exploring how to use apps within Teams to streamline your daily tasks."
+        }
+      ]
+    }
+  ]
+}

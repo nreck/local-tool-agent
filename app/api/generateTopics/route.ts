@@ -17,7 +17,7 @@ export async function POST(req: Request) {
         console.log("generateTopics received:", { goal, audience });
 
         const response = await generateObject({
-            model: openai2('qwen2.5-14b-instruct'),
+            model: openai2('qwq-32b'),
             system: `You are an english topic generator that generates highly relevant one-two words topics based on a goal and audience. Your output MUST be valid JSON and follow the given schema. DO NOT provide explanations, introductions, markdown formatting, or any extra text—only return the JSON object.`,
             prompt: `Create a course outline for a course with the goal of "${goal}". Audience: "${audience}".`,
             temperature: 0.2,
